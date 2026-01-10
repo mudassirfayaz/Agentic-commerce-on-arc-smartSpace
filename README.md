@@ -4,7 +4,7 @@ A React-based frontend for SmartSpace - an autonomous pay-per-use API access gat
 
 ## Features
 
-- **Landing Page**: Modern, responsive landing page similar to api-hub.ai with SmartSpace branding
+- **Landing Page**: Modern, responsive landing page similar 
 - **Authentication**: Login and Signup pages with wallet connection option
 - **Dashboard**: Main application dashboard with stats, quick actions, and usage tracking
 - **Routing**: React Router setup for seamless navigation between pages
