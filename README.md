@@ -1,86 +1,135 @@
-# SmartSpace Frontend
+# Agentic Commerce on Arc SmartSpace
 
-A React-based frontend for SmartSpace - an autonomous pay-per-use API access gateway with USDC payments.
+An autonomous pay-per-use API access gateway with USDC payments, enabling secure API usage for AI agents and applications without exposing API keys.
 
-## Features
+## Project Overview
 
-- **Landing Page**: Modern, responsive landing page similar to api-hub.ai with SmartSpace branding
-- **Authentication**: Login and Signup pages with wallet connection option
-- **Dashboard**: Main application dashboard with stats, quick actions, and usage tracking
-- **Routing**: React Router setup for seamless navigation between pages
+SmartSpace is a secure gateway that allows users and AI agents to call paid APIs (OpenAI, Google, Gemini, etc.) and pay instantly per request using USDC. Users do not need API keys, and billing remains controlled, transparent, and predictable.
 
-## Getting Started
+For detailed project concept, see [idea.txt](./idea.txt)
 
-### Prerequisites
+## Repository Structure
 
-- Node.js (v16 or higher)
-- npm or yarn
+This repository follows a monorepo structure with clear separation of concerns:
 
-### Installation
-
-1. Install dependencies:
-```bash
-npm install
+```
+├── frontend/          # React-based frontend application
+├── backend/           # Backend API and server logic
+├── agentic/           # AI agent system code
+├── idea.txt           # Project concept and requirements
+└── README.md          # This file
 ```
 
-2. Start the development server:
+### Frontend (`/frontend`)
+
+React-based user interface for SmartSpace dashboard, authentication, and management.
+
+**Tech Stack:**
+- React 18
+- React Router DOM
+- Vite
+- CSS
+
+**Quick Start:**
 ```bash
+cd frontend
+npm install
 npm run dev
 ```
 
-3. Open your browser and navigate to `http://localhost:5173`
+See [frontend/README.md](./frontend/README.md) for detailed documentation.
 
-## Project Structure
+### Backend (`/backend`)
 
-```
-src/
-├── pages/
-│   ├── LandingPage.jsx      # Main landing page
-│   ├── LandingPage.css      # Landing page styles
-│   ├── Login.jsx            # Login page
-│   ├── Signup.jsx           # Signup page
-│   ├── Auth.css             # Authentication pages styles
-│   ├── Dashboard.jsx        # Main dashboard
-│   └── Dashboard.css        # Dashboard styles
-├── App.jsx                  # Main app component with routing
-├── main.jsx                 # React entry point
-└── index.css                # Global styles and CSS variables
-```
+Platform logic, API gateway, and server-side functionality.
 
-## Routes
+**Responsibilities:**
+- API request handling
+- Payment processing integration
+- User and project management
+- Security and authentication
+- Usage tracking and logging
 
-- `/` - Landing page
-- `/login` - Login page
-- `/signup` - Signup page
-- `/dashboard` - Main dashboard (protected route)
+**Status:** In development
 
-## Technology Stack
+See [backend/README.md](./backend/README.md) for setup instructions.
 
-- **React 18** - UI framework
-- **React Router DOM** - Client-side routing
-- **Vite** - Build tool and dev server
-- **CSS** - Custom styling with CSS variables
+### Agentic System (`/agentic`)
 
-## Next Steps
+AI agent logic, automation, and intelligent task processing.
 
-- Implement actual authentication logic
-- Connect to backend API
-- Add USDC wallet integration
-- Implement API call functionality
-- Add usage tracking and analytics
-- Create project and agent management pages
+**Responsibilities:**
+- Agent orchestration
+- Task evaluation and approval
+- Autonomous API request handling
+- Integration with backend gateway
+- Result processing and feedback
 
-## Build for Production
+**Status:** In development
 
+See [agentic/README.md](./agentic/README.md) for documentation.
+
+## Development Guidelines
+
+### Folder Structure Standards
+
+Each component (frontend, backend, agentic) should maintain its own:
+
+- **README.md** - Component-specific documentation
+- **package.json** / **requirements.txt** / etc. - Dependency management
+- **.gitignore** - Component-specific ignore rules (if needed)
+- **src/** or appropriate source directory
+- **tests/** - Component-specific tests
+
+### Committing Code
+
+1. Work within your designated folder (`frontend/`, `backend/`, or `agentic/`)
+2. Ensure your component's tests pass before committing
+3. Update your component's README.md if adding new features
+4. Use clear, descriptive commit messages
+
+### Pull Requests
+
+When submitting PRs:
+- Clearly indicate which component(s) are affected
+- Include setup/run instructions if dependencies change
+- Update relevant README.md files
+- Ensure code follows the existing patterns in your component
+
+## Getting Started
+
+1. Clone the repository:
 ```bash
-npm run build
+git clone https://github.com/mudassirfayaz/Agentic-commerce-on-arc-smartSpace.git
+cd Agentic-commerce-on-arc-smartSpace
 ```
 
-The built files will be in the `dist` directory.
+2. Set up each component according to its README:
+   - [Frontend Setup](./frontend/README.md)
+   - [Backend Setup](./backend/README.md) (when available)
+   - [Agentic Setup](./agentic/README.md) (when available)
 
-## Preview Production Build
+## Core Features (MVP)
 
-```bash
-npm run preview
+- [x] Frontend dashboard and authentication UI
+- [ ] Create project or agent
+- [ ] Set budgets and spending rules
+- [ ] Per-request USDC payments
+- [ ] Secure API execution
+- [ ] Full usage + transaction logs
+- [ ] No API key exposure
+
+## Architecture Flow
+
 ```
+User/Agent → SmartSpace evaluates + pays → SmartSpace calls API → Returns result + receipt
+```
+
+## Contributing
+
+This is a hackathon project. Each developer should work within their designated component folder and maintain clean separation of concerns.
+
+## License
+
+[To be determined]
 
