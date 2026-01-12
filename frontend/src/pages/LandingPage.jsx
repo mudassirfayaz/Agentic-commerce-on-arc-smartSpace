@@ -1,7 +1,106 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './LandingPage.css'
 
 const LandingPage = () => {
+  const [selectedLanguage, setSelectedLanguage] = useState('python')
+  const [selectedFacility, setSelectedFacility] = useState('audio')
+  const [selectedPlatform, setSelectedPlatform] = useState('openai')
+  const apiKey = 'smartspace234lkjpoij;lkjljasdfij234ljkls'
+
+  const facilities = [
+    { id: 'text', label: 'Text', endpoint: '/v1/text/completion' },
+    { id: 'audio', label: 'Audio', endpoint: '/v1/audio/speech' },
+    { id: 'images', label: 'Images', endpoint: '/v1/images/generate' },
+    { id: 'embeddings', label: 'Embeddings', endpoint: '/v1/embeddings' },
+    { id: 'vision', label: 'Vision', endpoint: '/v1/vision/analyze' }
+  ]
+
+  const platforms = [
+    { id: 'openai', label: 'OpenAI', model: 'openai/tts-1' },
+    { id: 'anthropic', label: 'Anthropic', model: 'anthropic/claude-3' },
+    { id: 'google', label: 'Google', model: 'google/gemini-pro' },
+    { id: 'cohere', label: 'Cohere', model: 'cohere/command' }
+  ]
+
+  const getCodeSnippet = () => {
+    const facility = facilities.find(f => f.id === selectedFacility)
+    const platform = platforms.find(p => p.id === selectedPlatform)
+    const url = `https://smartspace.ai${facility.endpoint}`
+
+    if (selectedLanguage === 'python') {
+      return `# pip install requests
+import requests
+
+url = "${url}"
+headers = {
+    "Authorization": "Bearer ${apiKey}"
+}
+payload = {
+    "model": "${platform.model}",
+    "text": "Hello, world!",
+    "voice": "nova"
+}
+
+response = requests.post(
+    url,
+    headers=headers,
+    json=payload
+)
+print(response.json())`
+    } else if (selectedLanguage === 'java') {
+      return `import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.URI;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse.BodyHandlers;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+HttpClient client = HttpClient.newHttpClient();
+ObjectMapper mapper = new ObjectMapper();
+
+String url = "${url}";
+String json = mapper.writeValueAsString(Map.of(
+    "model", "${platform.model}",
+    "text", "Hello, world!",
+    "voice", "nova"
+));
+
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create(url))
+    .header("Authorization", "Bearer ${apiKey}")
+    .header("Content-Type", "application/json")
+    .POST(BodyPublishers.ofString(json))
+    .build();
+
+HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+System.out.println(response.body());`
+    } else if (selectedLanguage === 'javascript') {
+      return `const fetch = require('node-fetch');
+
+const url = "${url}";
+const headers = {
+    "Authorization": "Bearer ${apiKey}",
+    "Content-Type": "application/json"
+};
+const payload = {
+    model: "${platform.model}",
+    text: "Hello, world!",
+    voice: "nova"
+};
+
+fetch(url, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(payload)
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));`
+    }
+  }
+
   return (
     <div className="landing-page">
       {/* Navigation */}
@@ -23,21 +122,79 @@ const LandingPage = () => {
       {/* Hero Section */}
       <section className="hero">
         <div className="container">
-          <h1 className="hero-title">
-            Autonomous Pay-Per-Use API Access<br />
-            with USDC
-          </h1>
-          <p className="hero-subtitle">
-            A secure gateway that allows users and AI agents to call paid APIs (OpenAI, Google, Gemini, etc.)<br />
-            and pay instantly per request using USDC. No API keys needed. Transparent, controlled, and predictable billing.
-          </p>
-          <div className="hero-cta">
-            <Link to="/signup" className="btn btn-primary btn-large">
-              Get Started
-            </Link>
-            <Link to="/login" className="btn btn-secondary btn-large">
-              Sign In
-            </Link>
+          <div className="hero-content">
+            <div className="code-snippet-container">
+              <div className="code-snippet-card">
+                <div className="code-header">
+                  <div className="code-tabs">
+                    <button 
+                      className={`code-tab ${selectedLanguage === 'python' ? 'active' : ''}`}
+                      onClick={() => setSelectedLanguage('python')}
+                    >
+                      Python
+                    </button>
+                    <button 
+                      className={`code-tab ${selectedLanguage === 'java' ? 'active' : ''}`}
+                      onClick={() => setSelectedLanguage('java')}
+                    >
+                      Java
+                    </button>
+                    <button 
+                      className={`code-tab ${selectedLanguage === 'javascript' ? 'active' : ''}`}
+                      onClick={() => setSelectedLanguage('javascript')}
+                    >
+                      JavaScript
+                    </button>
+                  </div>
+                </div>
+                <div className="code-selectors">
+                  <div className="selector-group">
+                    <label>Facility:</label>
+                    <select 
+                      value={selectedFacility} 
+                      onChange={(e) => setSelectedFacility(e.target.value)}
+                      className="code-select"
+                    >
+                      {facilities.map(f => (
+                        <option key={f.id} value={f.id}>{f.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="selector-group">
+                    <label>Platform:</label>
+                    <select 
+                      value={selectedPlatform} 
+                      onChange={(e) => setSelectedPlatform(e.target.value)}
+                      className="code-select"
+                    >
+                      {platforms.map(p => (
+                        <option key={p.id} value={p.id}>{p.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <pre className="code-block">
+                  <code>{getCodeSnippet()}</code>
+                </pre>
+              </div>
+            </div>
+            <div className="hero-cta-section">
+              <h1 className="hero-title">
+                Autonomous Pay-Per-Use API Access<br />
+                with USDC
+              </h1>
+              <p className="hero-subtitle">
+                A secure gateway that allows users and AI agents to call paid APIs (OpenAI, Google, Gemini, etc.)<br />
+                and pay instantly per request using USDC. No API keys needed. Transparent, controlled, and predictable billing.
+              </p>
+              <div className="api-key-display">
+                <label>Your API Key:</label>
+                <div className="api-key-value">{apiKey}</div>
+              </div>
+              <Link to="/signup" className="btn btn-primary btn-large btn-get-key">
+                Get Your Key
+              </Link>
+            </div>
           </div>
         </div>
       </section>

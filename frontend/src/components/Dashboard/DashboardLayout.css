@@ -25,22 +25,6 @@
   animation: fadeIn 0.5s ease-out;
 }
 
-.dashboard-section {
-  margin-bottom: var(--spacing-xl);
-}
-
-.dashboard-section:last-child {
-  margin-bottom: 0;
-}
-
-.dashboard-section h2 {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: var(--spacing-md);
-  color: var(--text-inverse);
-  letter-spacing: -0.3px;
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -66,12 +50,5 @@
   .dashboard-main {
     padding: var(--spacing-md);
   }
-  
-  .dashboard-section h1 {
-    font-size: 20px;
-  }
-  
-  .dashboard-section h2 {
-    font-size: 16px;
-  }
 }
+
