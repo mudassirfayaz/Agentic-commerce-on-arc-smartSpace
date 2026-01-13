@@ -26,7 +26,7 @@ The SmartSpace Agentic Brain is an intelligent system that autonomously evaluate
 
 
 **Flow**: validate → load policies → check budget → assess risk → route to agent → decide → Execute(pay)& return response.
-## Tech Stack
+
 
 
 
