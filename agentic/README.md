@@ -4,7 +4,7 @@
 
 ## 🎯 Overview
 
-The SmartSpace Agentic Brain is an intelligent system that autonomously evaluates, approves, and pas  for AI API requests with automatic blockchain payments. It provides complete cost control, security, compliance, and auditability for pay-per-use AI services.
+The SmartSpace Agentic Brain is an intelligent system that autonomously evaluates, approves, and pays  for AI API requests with automatic blockchain payments. It provides complete cost control, security, compliance, and auditability for pay-per-use AI services.
 
 **Key Innovation**: No subscriptions. Pay only for actual usage via Arc blockchain + USDC stablecoin(circle).
 
