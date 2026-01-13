@@ -7,10 +7,11 @@ Defines cost estimation and pricing structures.
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, Optional, Any
-import requests
 import logging
 
-from ..config import config
+import requests
+
+from config import config
 
 logger = logging.getLogger(__name__)
 
@@ -102,18 +103,6 @@ class PricingData:
 class CostEstimate:
     """
     Cost estimate for an API request.
-    
-    Example (Medical Store - Simple Query):
-        estimate = CostEstimate(
-            request_id="req_abc123",
-            provider="openai",
-            model="gpt-3.5-turbo",
-            estimated_input_tokens=50,
-            estimated_output_tokens=150,
-            base_cost=0.0018,
-            platform_fee=0.0002,
-            total=0.002
-        )
     """
     
     # Identifiers
@@ -125,11 +114,44 @@ class CostEstimate:
     estimated_input_tokens: int = 0
     estimated_output_tokens: int = 0
     total_estimated_tokens: int = 0
+
+    # Costs
+    base_cost: float = 0.0
+    platform_fee: float = 0.0
+    total: float = 0.0
     
+    # Associated Data
+    pricing_data: Optional[PricingData] = None
+    
+    # Confidence
+    confidence: float = 0.85  # How confident we are in estimate (0-1)
+    
+    # Timestamp
+    estimated_at: datetime = field(default_factory=datetime.utcnow)
+    
+    def __post_init__(self):
+        """Calculate total tokens"""
+        self.total_estimated_tokens = self.estimated_input_tokens + self.estimated_output_tokens
+        if self.total == 0.0:
+            self.total = self.base_cost + self.platform_fee
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary"""
+        return {
+            "request_id": self.request_id,
+            "provider": self.provider,
+            "model": self.model,
+            "estimated_input_tokens": self.estimated_input_tokens,
+            "estimated_output_tokens": self.estimated_output_tokens,
+            "total_estimated_tokens": self.total_estimated_tokens,
+            "base_cost": self.base_cost,
+            "platform_fee": self.platform_fee,
+            "total": self.total,
+            "pricing_data": self.pricing_data.to_dict() if self.pricing_data else None,
             "confidence": self.confidence,
             "estimated_at": self.estimated_at.isoformat(),
         }
-    
+
     @classmethod
     def estimate_from_backend(cls, request_id: str, provider: str, model: str, 
                              estimated_input_tokens: int, estimated_output_tokens: int) -> 'CostEstimate':
@@ -184,39 +206,6 @@ class CostEstimate:
         except Exception as e:
             logger.error(f"Failed to estimate cost from backend: {e}")
             raise
-
-
-@dataclass
-class CostComparison:ional[PricingData] = None
-    
-    # Confidence
-    confidence: float = 0.85  # How confident we are in estimate (0-1)
-    
-    # Timestamp
-    estimated_at: datetime = field(default_factory=datetime.utcnow)
-    
-    def __post_init__(self):
-        """Calculate total tokens"""
-        self.total_estimated_tokens = self.estimated_input_tokens + self.estimated_output_tokens
-        if self.total == 0.0:
-            self.total = self.base_cost + self.platform_fee
-    
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary"""
-        return {
-            "request_id": self.request_id,
-            "provider": self.provider,
-            "model": self.model,
-            "estimated_input_tokens": self.estimated_input_tokens,
-            "estimated_output_tokens": self.estimated_output_tokens,
-            "total_estimated_tokens": self.total_estimated_tokens,
-            "base_cost": self.base_cost,
-            "platform_fee": self.platform_fee,
-            "total": self.total,
-            "pricing_data": self.pricing_data.to_dict() if self.pricing_data else None,
-            "confidence": self.confidence,
-            "estimated_at": self.estimated_at.isoformat(),
-        }
 
 
 @dataclass

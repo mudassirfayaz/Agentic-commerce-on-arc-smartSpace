@@ -1,19 +1,55 @@
 """
 Policy Manager
 
-Central system for loading and enforcing user-defined policies.
+Central system for loading and enforcing both user-defined and system-defined policies.
+Fetches policies from backend and validates requests against them.
 """
 
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
 from datetime import datetime
 import logging
+import requests
 
-from ..models.user import UserPolicy, UserContext
-from ..models.request import APIRequest
-from ..config import config
+# Assuming these models exist in your project structure
+from models.user import UserPolicy
+from models.request import APIRequest
+from config import Config
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class SystemPolicy:
+    """
+    System-wide policies defined by the platform.
+    These are enforced on all requests regardless of user settings.
+    """
+    policy_id: str
+    name: str
+    description: str
+    
+    # System-level restrictions
+    blocked_providers: List[str] = field(default_factory=list)  # Platform blocks
+    blocked_models: List[str] = field(default_factory=list)
+    blocked_operations: List[str] = field(default_factory=list)
+    
+    # System limits (cannot be exceeded by users)
+    max_per_request_limit: float = 100.0  # Max USDC per request (hard limit)
+    max_daily_limit: float = 10000.0
+    max_rate_per_minute: int = 100
+    
+    # Security policies
+    require_verification: bool = True
+    require_2fa_above: float = 10.0  # Require 2FA for requests > $10
+    
+    # Compliance requirements
+    audit_all_requests: bool = True
+    retention_days: int = 365
+    
+    is_active: bool = True
+    created_at: datetime = field(default_factory=datetime.utcnow)
+    updated_at: datetime = field(default_factory=datetime.utcnow)
 
 
 @dataclass
@@ -28,7 +64,7 @@ class PolicyViolation:
 @dataclass
 class ComplianceResult:
     """Result of policy compliance check"""
-    compliant: bool
+    compliant: bool = True  # Default to True so empty initialization works
     violations: List[PolicyViolation] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
     policies_checked: List[str] = field(default_factory=list)
@@ -69,15 +105,78 @@ class PolicyManager:
     """
     Manages policy loading, validation, and enforcement.
     
-    This is the gatekeeper - ensures all requests comply with user policies.
+    Loads and enforces BOTH:
+    1. System policies - Platform-wide rules (from backend)
+    2. User policies - User-specific configurations (from backend)
+    
+    System policies are enforced first and cannot be overridden.
     """
     
     def __init__(self):
-        self.cache: Dict[str, UserPolicy] = {}
+        self.config = Config()
+        self.user_policy_cache: Dict[str, UserPolicy] = {}
+        self.system_policy_cache: Optional[SystemPolicy] = None
+        self.system_policy_loaded_at: Optional[datetime] = None
+        self.system_policy_ttl = 300  # Cache system policy for 5 minutes
     
-    async def load_policy(self, user_id: str, project_id: str) -> UserPolicy:
+    async def load_system_policy(self) -> SystemPolicy:
         """
-        Load policy from backend for user/project.
+        Load system-wide policy from backend.
+        These are platform rules that apply to all users.
+        
+        Returns:
+            SystemPolicy object
+        """
+        # Check cache
+        if self.system_policy_cache and self.system_policy_loaded_at:
+            age = (datetime.utcnow() - self.system_policy_loaded_at).seconds
+            if age < self.system_policy_ttl:
+                logger.debug("System policy cache hit")
+                return self.system_policy_cache
+        
+        # Fetch from backend
+        try:
+            url = f"{self.config.BACKEND_API_URL}/policies/system"
+            response = requests.get(url, timeout=self.config.API_TIMEOUT)
+            response.raise_for_status()
+            data = response.json()
+            
+            system_policy = SystemPolicy(
+                policy_id=data.get('policy_id', 'sys_default'),
+                name=data.get('name', 'System Policy'),
+                description=data.get('description', 'Platform-wide policies'),
+                blocked_providers=data.get('blocked_providers', []),
+                blocked_models=data.get('blocked_models', []),
+                blocked_operations=data.get('blocked_operations', []),
+                max_per_request_limit=data.get('max_per_request_limit', 100.0),
+                max_daily_limit=data.get('max_daily_limit', 10000.0),
+                max_rate_per_minute=data.get('max_rate_per_minute', 100),
+                require_verification=data.get('require_verification', True),
+                require_2fa_above=data.get('require_2fa_above', 10.0),
+                audit_all_requests=data.get('audit_all_requests', True),
+                retention_days=data.get('retention_days', 365),
+                is_active=data.get('is_active', True)
+            )
+            
+            # Update cache
+            self.system_policy_cache = system_policy
+            self.system_policy_loaded_at = datetime.utcnow()
+            
+            logger.info("Loaded system policy from backend")
+            return system_policy
+            
+        except Exception as e:
+            logger.warning(f"Failed to load system policy, using defaults: {e}")
+            # Return default system policy
+            return SystemPolicy(
+                policy_id="sys_default",
+                name="Default System Policy",
+                description="Default platform policies"
+            )
+    
+    async def load_user_policy(self, user_id: str, project_id: str) -> UserPolicy:
+        """
+        Load user-specific policy from backend.
         
         Args:
             user_id: User identifier
@@ -89,64 +188,109 @@ class PolicyManager:
         cache_key = f"{user_id}:{project_id}"
         
         # Check cache first
-        if cache_key in self.cache:
-            logger.debug(f"Policy cache hit for {cache_key}")
-            return self.cache[cache_key]
+        if cache_key in self.user_policy_cache:
+            logger.debug(f"User policy cache hit for {cache_key}")
+            return self.user_policy_cache[cache_key]
         
         # Fetch from backend
         try:
             policy = UserPolicy.fetch_from_backend(user_id, project_id)
-            self.cache[cache_key] = policy
-            logger.info(f"Loaded policy for {user_id}/{project_id}")
+            self.user_policy_cache[cache_key] = policy
+            logger.info(f"Loaded user policy for {user_id}/{project_id}")
             return policy
         except Exception as e:
-            logger.error(f"Failed to load policy: {e}")
+            logger.error(f"Failed to load user policy: {e}")
             raise
     
     async def check_compliance(
         self,
         request: APIRequest,
-        policy: UserPolicy
+        user_policy: UserPolicy,
+        system_policy: Optional[SystemPolicy] = None
     ) -> ComplianceResult:
         """
         Check if request complies with ALL policies.
         
-        This is the main enforcement point - validates everything.
+        Enforces BOTH system and user policies:
+        1. System policies (platform-wide) - checked first, cannot be overridden
+        2. User policies (user-specific) - checked second
         
         Args:
             request: The API request to validate
-            policy: User's policy configuration
+            user_policy: User's policy configuration
+            system_policy: System policy (loaded automatically if not provided)
             
         Returns:
             ComplianceResult with violations if any
         """
         result = ComplianceResult()
         
-        # 1. CRITICAL: Validate provider whitelist
-        if not self._validate_provider(request.api_provider, policy, result):
+        # Load system policy if not provided
+        if system_policy is None:
+            system_policy = await self.load_system_policy()
+        
+        # STEP 1: Check SYSTEM policies first (cannot be overridden)
+        result.policies_checked.append("system_policy")
+        
+        # 1a. Check system blocked providers
+        if request.api_provider in system_policy.blocked_providers:
+            result.add_violation(
+                "system_policy",
+                "blocked_provider",
+                f"Provider '{request.api_provider}' is blocked by platform policy",
+                "critical"
+            )
+            return result  # Early exit
+        
+        # 1b. Check system blocked models
+        model_key = f"{request.api_provider}/{request.model_name}"
+        if model_key in system_policy.blocked_models:
+            result.add_violation(
+                "system_policy",
+                "blocked_model",
+                f"Model '{model_key}' is blocked by platform policy",
+                "critical"
+            )
+            return result  # Early exit
+        
+        # 1c. Check system max limits (hard caps)
+        if request.estimated_cost > system_policy.max_per_request_limit:
+            result.add_violation(
+                "system_policy",
+                "exceeds_system_limit",
+                f"Request cost ${request.estimated_cost:.2f} exceeds platform limit ${system_policy.max_per_request_limit:.2f}",
+                "critical"
+            )
+            return result  # Early exit
+        
+        # STEP 2: Check USER policies
+        result.policies_checked.append("user_policy")
+        
+        # 2a. CRITICAL: Validate provider whitelist
+        if not self._validate_provider(request.api_provider, user_policy, result):
             return result  # Early exit on provider violation
         
-        # 2. CRITICAL: Validate model whitelist
-        if not self._validate_model(request.model_name, request.api_provider, policy, result):
+        # 2b. CRITICAL: Validate model whitelist
+        if not self._validate_model(request.model_name, request.api_provider, user_policy, result):
             return result  # Early exit on model violation
         
-        # 3. Check per-request cost limit
-        if not self._validate_per_request_limit(request.estimated_cost, policy, result):
+        # 2c. Check per-request cost limit
+        if not self._validate_per_request_limit(request.estimated_cost, user_policy, result):
             pass  # Continue checking other policies
         
-        # 4. Check if policy is active
-        if not policy.is_active:
+        # 2d. Check if policy is active
+        if not user_policy.is_active:
             result.add_violation(
-                "policy_status",
+                "user_policy",
                 "inactive_policy",
                 f"Policy for user {request.user_id} is inactive",
                 "critical"
             )
             return result
         
-        # 5. Check forbidden operations
+        # 2e. Check forbidden operations
         operation_key = f"{request.api_provider}.{request.model_name}.{request.operation_type}"
-        if operation_key in policy.forbidden_operations:
+        if operation_key in user_policy.forbidden_operations:
             result.add_violation(
                 "forbidden_operations",
                 "operation_blocked",
@@ -154,8 +298,8 @@ class PolicyManager:
                 "high"
             )
         
-        # 6. Check time-based restrictions
-        if not self._validate_time_restrictions(policy, result):
+        # 2f. Check time-based restrictions
+        if not self._validate_time_restrictions(user_policy, result):
             pass
         
         # Mark request as policy-validated
@@ -305,7 +449,8 @@ class PolicyManager:
         Returns:
             List of allowed provider names
         """
-        policy = await self.load_policy(user_id, project_id)
+        # Fixed: Changed from load_policy (undefined) to load_user_policy
+        policy = await self.load_user_policy(user_id, project_id)
         return policy.allowed_providers
     
     async def get_allowed_models(
@@ -325,7 +470,8 @@ class PolicyManager:
         Returns:
             List of allowed model names for that provider
         """
-        policy = await self.load_policy(user_id, project_id)
+        # Fixed: Changed from load_policy (undefined) to load_user_policy
+        policy = await self.load_user_policy(user_id, project_id)
         return policy.allowed_models.get(provider, [])
     
     def clear_cache(self, user_id: Optional[str] = None, project_id: Optional[str] = None):
@@ -338,9 +484,11 @@ class PolicyManager:
         """
         if user_id and project_id:
             cache_key = f"{user_id}:{project_id}"
-            if cache_key in self.cache:
-                del self.cache[cache_key]
+            # Fixed: Changed self.cache to self.user_policy_cache
+            if cache_key in self.user_policy_cache:
+                del self.user_policy_cache[cache_key]
                 logger.info(f"Cleared cache for {cache_key}")
         else:
-            self.cache.clear()
+            # Fixed: Changed self.cache to self.user_policy_cache
+            self.user_policy_cache.clear()
             logger.info("Cleared entire policy cache")

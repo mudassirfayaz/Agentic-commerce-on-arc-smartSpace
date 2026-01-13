@@ -20,8 +20,8 @@ from enum import Enum
 import requests
 import logging
 
-from ..config import Config
-from ..models.budget import BudgetCheck as BudgetCheckModel, BudgetPolicy
+from config import Config
+from models.budget import BudgetCheck as BudgetCheckModel, BudgetPolicy
 
 # Configure logging
 logger = logging.getLogger(__name__)

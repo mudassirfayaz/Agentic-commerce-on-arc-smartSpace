@@ -11,7 +11,7 @@ from typing import Dict, List, Optional, Any
 import requests
 import logging
 
-from ..config import config
+from config import config
 
 logger = logging.getLogger(__name__)
 
@@ -229,27 +229,33 @@ class UserBaseline:
     # Cost patterns
     average_request_cost: float = 0.0
     median_request_cost: float = 0.0
-            "sample_size": self.sample_size,
-            "last_updated": self.last_updated.isoformat(),
-        }
+    max_request_cost: float = 0.0
+    cost_std_dev: float = 0.0
     
     @classmethod
-    def fetch_from_backend(cls, user_id: str, project_id: str) -> 'UserBaseline':
+    def fetch_from_backend(cls, user_id: str, project_id: str, lookback_days: int = 30) -> Optional['UserBaseline']:
         """
         Fetch user behavioral baseline from backend.
         
         Args:
             user_id: User identifier
             project_id: Project identifier
+            lookback_days: Days of history to analyze (default: 30)
             
         Returns:
-            UserBaseline object
+            UserBaseline object or None if insufficient data
         """
         try:
             url = config.get_endpoint('risk', 'get_baseline', user_id=user_id, project_id=project_id)
-            response = requests.get(url, timeout=config.API_TIMEOUT)
+            params = {'lookback_days': lookback_days}
+            response = requests.get(url, params=params, timeout=config.API_TIMEOUT)
             response.raise_for_status()
             data = response.json()
+            
+            # Check if we have sufficient data
+            if data.get('sample_size', 0) < 10:
+                logger.warning(f"Insufficient baseline data for {user_id}/{project_id}")
+                return None
             
             return cls(
                 user_id=data['user_id'],
@@ -267,11 +273,13 @@ class UserBaseline:
                 model_distribution=data.get('model_distribution', {}),
                 typical_days=data.get('typical_days', []),
                 typical_hours=data.get('typical_hours', []),
+                lookback_days=data.get('lookback_days', lookback_days),
+                total_requests=data.get('total_requests', 0),
                 sample_size=data.get('sample_size', 0),
             )
         except Exception as e:
-            logger.error(f"Failed to fetch baseline from backend: {e}")
-            raise
+            logger.warning(f"Failed to fetch baseline from backend: {e}")
+            return None
 
     # Volume patterns
     average_requests_per_day: float = 0.0
@@ -289,6 +297,10 @@ class UserBaseline:
     # Time patterns
     typical_days: List[int] = field(default_factory=list)  # Days of week
     typical_hours: List[int] = field(default_factory=list)  # Hours of day
+    
+    # Tracking parameters
+    lookback_days: int = 30  # How many days of history analyzed
+    total_requests: int = 0  # Total requests in baseline period
     
     # Metadata
     baseline_period_start: datetime = field(default_factory=datetime.utcnow)
@@ -326,6 +338,8 @@ class UserBaseline:
             "model_distribution": self.model_distribution,
             "typical_days": self.typical_days,
             "typical_hours": self.typical_hours,
+            "lookback_days": self.lookback_days,
+            "total_requests": self.total_requests,
             "baseline_period_start": self.baseline_period_start.isoformat(),
             "baseline_period_end": self.baseline_period_end.isoformat(),
             "sample_size": self.sample_size,

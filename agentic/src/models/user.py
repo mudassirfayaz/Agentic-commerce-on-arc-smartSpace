@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, Any
 import requests
 import logging
 
-from ..config import config
+from config import config
 
 logger = logging.getLogger(__name__)
 
@@ -148,60 +148,24 @@ class UserContext:
     Complete context about a user/project for decision-making.
     
     Includes policy, spending history, and behavioral patterns.
+    Used to validate user and check account status.
     """
     
     # Identifiers
     user_id: str
     project_id: str
     
+    # User account info
+    account_status: str = "active"  # "active", "suspended", "frozen", "banned"
+    is_verified: bool = True
+    is_active: bool = True
+    
     # Policy
-    policy: UserPolicy
+    policy: Optional[UserPolicy] = None
     
-            "created_at": self.created_at.isoformat(),
-            "last_activity": self.last_activity.isoformat(),
-        }
+    # Associated agents
+    agents: List[str] = field(default_factory=list)
     
-    @classmethod
-    def fetch_from_backend(cls, user_id: str, project_id: str) -> 'UserContext':
-        """
-        Fetch complete user context from backend.
-        
-        Args:
-            user_id: User identifier
-            project_id: Project identifier
-            
-        Returns:
-            UserContext object with all data from backend
-        """
-        try:
-            url = config.get_endpoint('users', 'get_context', user_id=user_id)
-            response = requests.get(url, params={'project_id': project_id}, timeout=config.API_TIMEOUT)
-            response.raise_for_status()
-            data = response.json()
-            
-            policy = UserPolicy.fetch_from_backend(user_id, project_id)
-            
-            return cls(
-                user_id=data['user_id'],
-                project_id=data['project_id'],
-                policy=policy,
-                agents=data.get('agents', []),
-                total_spent_today=data.get('total_spent_today', 0.0),
-                total_spent_this_month=data.get('total_spent_this_month', 0.0),
-                total_requests_today=data.get('total_requests_today', 0),
-                total_requests_this_month=data.get('total_requests_this_month', 0),
-                recent_requests=data.get('recent_requests', []),
-                recent_rejections=data.get('recent_rejections', 0),
-                average_request_cost=data.get('average_request_cost', 0.0),
-                average_requests_per_day=data.get('average_requests_per_day', 0.0),
-                typical_providers=data.get('typical_providers', []),
-                typical_request_times=data.get('typical_request_times', []),
-                account_status=data.get('account_status', 'active'),
-                is_verified=data.get('is_verified', True),
-            )
-        except Exception as e:
-            logger.error(f"Failed to fetch user context from backend: {e}")
-            raise
     # Spending history
     total_spent_today: float = 0.0
     total_spent_this_month: float = 0.0
@@ -218,24 +182,45 @@ class UserContext:
     typical_providers: List[str] = field(default_factory=list)
     typical_request_times: List[int] = field(default_factory=list)  # Hours of day
     
-    # Account status
-    account_status: str = "active"  # "active", "suspended", "frozen"
-    is_verified: bool = True
-    
     # Metadata
     created_at: datetime = field(default_factory=datetime.utcnow)
     last_activity: datetime = field(default_factory=datetime.utcnow)
     
+    def is_valid_user(self) -> bool:
+        """Check if user is valid and can make requests."""
+        return (
+            self.is_active and
+            self.is_verified and
+            self.account_status == "active"
+        )
+    
+    def get_validation_error(self) -> Optional[str]:
+        """Get reason why user is invalid, if any."""
+        if not self.is_active:
+            return "User account is inactive"
+        if not self.is_verified:
+            return "User account is not verified"
+        if self.account_status != "active":
+            return f"User account is {self.account_status}"
+        return None
+    
+    
     def get_remaining_daily_budget(self) -> float:
         """Calculate remaining budget for today"""
+        if not self.policy:
+            return 0.0
         return max(0.0, self.policy.daily_budget - self.total_spent_today)
     
     def get_remaining_monthly_budget(self) -> float:
         """Calculate remaining budget for this month"""
+        if not self.policy:
+            return 0.0
         return max(0.0, self.policy.monthly_budget - self.total_spent_this_month)
     
     def is_within_budget(self, amount: float) -> bool:
         """Check if request amount is within available budget"""
+        if not self.policy:
+            return False
         daily_ok = (self.total_spent_today + amount) <= self.policy.daily_budget
         monthly_ok = (self.total_spent_this_month + amount) <= self.policy.monthly_budget
         return daily_ok and monthly_ok
@@ -245,7 +230,10 @@ class UserContext:
         return {
             "user_id": self.user_id,
             "project_id": self.project_id,
-            "policy": self.policy.to_dict(),
+            "account_status": self.account_status,
+            "is_verified": self.is_verified,
+            "is_active": self.is_active,
+            "policy": self.policy.to_dict() if self.policy else None,
             "agents": self.agents,
             "total_spent_today": self.total_spent_today,
             "total_spent_this_month": self.total_spent_this_month,
@@ -257,8 +245,76 @@ class UserContext:
             "average_requests_per_day": self.average_requests_per_day,
             "typical_providers": self.typical_providers,
             "typical_request_times": self.typical_request_times,
-            "account_status": self.account_status,
-            "is_verified": self.is_verified,
             "created_at": self.created_at.isoformat(),
             "last_activity": self.last_activity.isoformat(),
         }
+    
+    @classmethod
+    def fetch_from_backend(cls, user_id: str, project_id: str) -> 'UserContext':
+        """
+        Fetch complete user context from backend (includes validation).
+        
+        This validates the user by checking:
+        - Account exists
+        - Account is active
+        - Account is verified
+        - Account status is not suspended/frozen/banned
+        
+        Args:
+            user_id: User identifier
+            project_id: Project identifier
+            
+        Returns:
+            UserContext object with all data from backend
+            
+        Raises:
+            Exception if user not found or validation fails
+        """
+        try:
+            url = config.get_endpoint('users', 'get_context', user_id=user_id)
+            response = requests.get(url, params={'project_id': project_id}, timeout=config.API_TIMEOUT)
+            response.raise_for_status()
+            data = response.json()
+            
+            # Fetch policy separately
+            try:
+                policy = UserPolicy.fetch_from_backend(user_id, project_id)
+            except Exception as e:
+                logger.warning(f"Could not fetch policy: {e}")
+                policy = None
+            
+            context = cls(
+                user_id=data['user_id'],
+                project_id=data['project_id'],
+                account_status=data.get('account_status', 'active'),
+                is_verified=data.get('is_verified', True),
+                is_active=data.get('is_active', True),
+                policy=policy,
+                agents=data.get('agents', []),
+                total_spent_today=data.get('total_spent_today', 0.0),
+                total_spent_this_month=data.get('total_spent_this_month', 0.0),
+                total_requests_today=data.get('total_requests_today', 0),
+                total_requests_this_month=data.get('total_requests_this_month', 0),
+                recent_requests=data.get('recent_requests', []),
+                recent_rejections=data.get('recent_rejections', 0),
+                average_request_cost=data.get('average_request_cost', 0.0),
+                average_requests_per_day=data.get('average_requests_per_day', 0.0),
+                typical_providers=data.get('typical_providers', []),
+                typical_request_times=data.get('typical_request_times', []),
+            )
+            
+            # Validate user
+            if not context.is_valid_user():
+                error = context.get_validation_error()
+                logger.error(f"User validation failed: {error}")
+                raise ValueError(f"User validation failed: {error}")
+            
+            logger.info(f"User validated: {user_id}/{project_id}")
+            return context
+            
+        except requests.RequestException as e:
+            logger.error(f"Failed to fetch user context from backend: {e}")
+            raise ValueError(f"User not found or backend error: {str(e)}")
+        except Exception as e:
+            logger.error(f"User validation error: {e}")
+            raise

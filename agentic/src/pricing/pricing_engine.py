@@ -22,8 +22,8 @@ import requests
 import logging
 import re
 
-from ..config import Config
-from ..models.cost import CostEstimate as CostEstimateModel, PricingData as PricingDataModel
+from config import Config
+from models.cost import CostEstimate as CostEstimateModel, PricingData as PricingDataModel
 
 # Configure logging
 logger = logging.getLogger(__name__)

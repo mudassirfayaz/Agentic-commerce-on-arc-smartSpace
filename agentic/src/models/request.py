@@ -12,7 +12,7 @@ import uuid
 import requests
 import logging
 
-from ..config import config
+from config import config
 
 logger = logging.getLogger(__name__)
 
@@ -49,15 +49,15 @@ class APIRequest:
     # Identifiers
     user_id: str
     project_id: str
-    request_id: str = field(default_factory=lambda: f"req_{uuid.uuid4().hex[:16]}")
-    
-    # Agent info (optional if request comes from user directly)
-    agent_id: Optional[str] = None
     
     # API details (MUST be validated against user's whitelist)
     api_provider: str  # e.g., "openai", "anthropic", "google"
     model_name: str    # e.g., "gpt-4", "claude-3-opus", "gemini-pro"
     operation_type: str  # e.g., "chat", "vision", "code", "embedding"
+    
+    # Optional fields with defaults
+    request_id: str = field(default_factory=lambda: f"req_{uuid.uuid4().hex[:16]}")
+    agent_id: Optional[str] = None
     
     # Request parameters (passed to the API)
     request_params: Dict[str, Any] = field(default_factory=dict)
@@ -116,24 +116,6 @@ class APIRequest:
         
         fingerprint_str = "|".join(components)
         return hashlib.sha256(fingerprint_str.encode()).hexdigest()[:16]
-    
-    def save_to_backend(self) -> str:
-        """
-        Save this request to backend.
-        
-        Returns:
-            Request ID
-        """
-        try:
-            url = config.get_endpoint('requests', 'create_request')
-            response = requests.post(url, json=self.to_dict(), timeout=config.API_TIMEOUT)
-            response.raise_for_status()
-            request_id = response.json().get('request_id')
-            logger.info(f"Saved request: {request_id}")
-            return request_id
-        except Exception as e:
-            logger.error(f"Failed to save request to backend: {e}")
-            raise
     
     @classmethod
     def fetch_from_backend(cls, request_id: str) -> Optional['APIRequest']:

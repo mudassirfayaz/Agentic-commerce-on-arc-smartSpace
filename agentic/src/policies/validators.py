@@ -9,8 +9,8 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 import logging
 
-from ..models.user import UserPolicy
-from ..models.request import APIRequest
+from models.user import UserPolicy
+from models.request import APIRequest
 
 logger = logging.getLogger(__name__)
 

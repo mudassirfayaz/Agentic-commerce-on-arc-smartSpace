@@ -9,10 +9,14 @@ from datetime import datetime
 from enum import Enum
 from typing import Dict, List, Optional, Any
 import uuid
-import requests
 import logging
+import hashlib
+import json
 
-from ..config import config
+import requests
+
+# Assuming config exists in the parent package
+from config import config
 
 logger = logging.getLogger(__name__)
 
@@ -32,29 +36,38 @@ class AuditEventType(Enum):
     
     # Budget checks
     BUDGET_CHECK = "budget_check"
+    BUDGET_CHECKED = "budget_checked"
     BUDGET_EXHAUSTED = "budget_exhausted"
+    BUDGET_EXCEEDED = "budget_exceeded"
     BUDGET_ALERT = "budget_alert"
     
     # Risk assessment
     RISK_ASSESSMENT = "risk_assessment"
+    RISK_ASSESSED = "risk_assessed"
     FRAUD_DETECTED = "fraud_detected"
     ANOMALY_DETECTED = "anomaly_detected"
     
     # Agent decisions
     AGENT_DECISION = "agent_decision"
+    DECISION_MADE = "decision_made"
     AGENT_ESCALATION = "agent_escalation"
     
     # Payment execution
+    PAYMENT_RESERVED = "payment_reserved"
     PAYMENT_APPROVED = "payment_approved"
     PAYMENT_EXECUTED = "payment_executed"
+    PAYMENT_COMPLETED = "payment_completed"
     PAYMENT_FAILED = "payment_failed"
+    PAYMENT_REFUNDED = "payment_refunded"
     
     # API execution
     API_CALL_STARTED = "api_call_started"
+    API_CALL_SUCCESS = "api_call_success"
     API_CALL_COMPLETED = "api_call_completed"
     API_CALL_FAILED = "api_call_failed"
     
     # System events
+    ERROR = "error"
     SYSTEM_ERROR = "system_error"
     CONFIGURATION_CHANGED = "configuration_changed"
 
@@ -63,19 +76,6 @@ class AuditEventType(Enum):
 class AuditEntry:
     """
     Single audit log entry for an event.
-    
-    Example (Provider Validation):
-        entry = AuditEntry(
-            event_type=AuditEventType.PROVIDER_VALIDATION,
-            request_id="req_abc123",
-            user_id="medical_store_001",
-            event_details={
-                "provider_requested": "openai",
-                "allowed_providers": ["openai", "google"],
-                "validation_result": "PASSED"
-            },
-            result="success"
-        )
     """
     
     # Identifiers
@@ -108,9 +108,6 @@ class AuditEntry:
         Calculate hash of this entry for immutability.
         Hash includes previous_hash to create chain.
         """
-        import hashlib
-        import json
-        
         # Create deterministic string representation
         data = {
             "log_id": self.log_id,
@@ -149,7 +146,6 @@ class AuditEntry:
 class AuditLog:
     """
     Collection of audit entries for a request or time period.
-    
     Represents the complete audit trail.
     """
     
@@ -186,11 +182,20 @@ class AuditLog:
         Returns True if all hashes are valid and linked.
         """
         for i, entry in enumerate(self.entries):
-            # Verify entry hash
-            expected_hash = entry.calculate_hash()
-            "updated_at": self.updated_at.isoformat(),
-            "integrity_verified": self.verify_integrity(),
-        }
+            # 1. Verify that the entry's data matches its hash
+            # Note: We store the existing hash, recalculate, and compare
+            stored_hash = entry.entry_hash
+            calculated_hash = entry.calculate_hash()
+            
+            if stored_hash != calculated_hash:
+                return False
+
+            # 2. Verify chain link (current previous_hash == previous entry_hash)
+            if i > 0:
+                if entry.previous_hash != self.entries[i-1].entry_hash:
+                    return False
+        
+        return True
     
     @classmethod
     def fetch_from_backend(cls, audit_id: str) -> Optional['AuditLog']:
@@ -211,6 +216,12 @@ class AuditLog:
             
             entries = []
             for entry_data in data.get('entries', []):
+                # Convert string timestamp back to datetime
+                if isinstance(entry_data.get('timestamp'), str):
+                    ts = datetime.fromisoformat(entry_data['timestamp'])
+                else:
+                    ts = datetime.utcnow()
+
                 event_type = AuditEventType(entry_data['event_type'])
                 entry = AuditEntry(
                     log_id=entry_data['log_id'],
@@ -223,28 +234,28 @@ class AuditLog:
                     context_snapshot=entry_data.get('context_snapshot', {}),
                     result=entry_data.get('result', 'success'),
                     error=entry_data.get('error'),
+                    timestamp=ts,
                     previous_hash=entry_data.get('previous_hash'),
                     entry_hash=entry_data.get('entry_hash'),
                 )
                 entries.append(entry)
             
+            # Handle main log timestamps
+            created_at = datetime.fromisoformat(data['created_at']) if 'created_at' in data else datetime.utcnow()
+            updated_at = datetime.fromisoformat(data['updated_at']) if 'updated_at' in data else datetime.utcnow()
+
             return cls(
                 audit_id=data['audit_id'],
                 request_id=data.get('request_id'),
                 user_id=data.get('user_id'),
                 project_id=data.get('project_id'),
                 entries=entries,
+                created_at=created_at,
+                updated_at=updated_at
             )
         except Exception as e:
             logger.error(f"Failed to fetch audit log from backend: {e}")
             return None
-   
-            # Verify chain link
-            if i > 0:
-                if entry.previous_hash != self.entries[i-1].entry_hash:
-                    return False
-        
-        return True
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
