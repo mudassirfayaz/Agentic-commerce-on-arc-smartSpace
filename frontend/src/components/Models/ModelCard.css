@@ -1,0 +1,129 @@
+.model-card {
+  background: #212121;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid transparent;
+}
+
+.model-card:hover {
+  border-color: #BB4EEF;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(187, 78, 239, 0.2);
+}
+
+.model-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.model-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.model-card-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.model-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #F2F2F2;
+}
+
+.model-provider {
+  font-size: 12px;
+  color: #BB4EEF;
+  text-transform: capitalize;
+}
+
+.model-description {
+  margin: 0;
+  font-size: 14px;
+  color: #F2F2F2;
+  opacity: 0.8;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.model-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.model-pricing-tier {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.pricing-free {
+  background: rgba(46, 204, 113, 0.2);
+  color: #2ecc71;
+}
+
+.pricing-low {
+  background: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+}
+
+.pricing-medium {
+  background: rgba(241, 196, 15, 0.2);
+  color: #f1c40f;
+}
+
+.pricing-high {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+.model-category {
+  font-size: 12px;
+  color: #F2F2F2;
+  opacity: 0.6;
+  text-transform: capitalize;
+}
+
+.model-capabilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.capability-tag {
+  padding: 4px 8px;
+  background: rgba(187, 78, 239, 0.1);
+  border: 1px solid rgba(187, 78, 239, 0.3);
+  border-radius: 4px;
+  font-size: 11px;
+  color: #BB4EEF;
+}
+
+@media (max-width: 768px) {
+  .model-card {
+    padding: 16px;
+  }
+  
+  .model-name {
+    font-size: 16px;
+  }
+  
+  .model-description {
+    font-size: 13px;
+  }
+}
+

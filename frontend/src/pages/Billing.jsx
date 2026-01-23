@@ -3,16 +3,8 @@ import './Billing.css'
 
 const Billing = () => {
   return (
-    <DashboardLayout title="Billing">
+    <DashboardLayout>
       <div className="billing-page">
-        <div className="page-header">
-          <div>
-            <h1>Billing</h1>
-            <p className="page-subtitle">Manage your wallet, view invoices, and payment history</p>
-          </div>
-          <button className="btn btn-primary">Fund Wallet</button>
-        </div>
-
         <div className="billing-overview">
           <div className="wallet-card">
             <div className="wallet-header">

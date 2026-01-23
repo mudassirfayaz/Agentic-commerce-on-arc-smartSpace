@@ -2,23 +2,6 @@
   animation: fadeIn 0.3s ease-out;
 }
 
-.page-header {
-  margin-bottom: var(--spacing-xl);
-}
-
-.page-header h1 {
-  font-size: 24px;
-  font-weight: 800;
-  margin-bottom: var(--spacing-xs);
-  color: var(--text-inverse);
-  letter-spacing: -0.5px;
-}
-
-.page-subtitle {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin: 0;
-}
 
 .usage-stats {
   display: grid;

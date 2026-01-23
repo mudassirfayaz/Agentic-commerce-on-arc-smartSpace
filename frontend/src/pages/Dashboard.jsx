@@ -1,55 +1,69 @@
-import Sidebar from '../components/Dashboard/Sidebar'
-import Header from '../components/Dashboard/Header'
-import WelcomeSection from '../components/Dashboard/WelcomeSection'
-import StatsCards from '../components/Dashboard/StatsCards'
-import QuickActions from '../components/Dashboard/QuickActions'
-import RecentActivity from '../components/Dashboard/RecentActivity'
-import UsageAnalytics from '../components/Dashboard/UsageAnalytics'
-import ApiCallInterface from '../components/Dashboard/ApiCallInterface'
-import GettingStarted from '../components/Dashboard/GettingStarted'
+import { useState, useEffect } from 'react'
+import DashboardLayout from '../components/Dashboard/DashboardLayout'
+import ApiKeySection from '../components/Dashboard/ApiKeySection'
+import SimpleChatbot from '../components/Dashboard/SimpleChatbot'
+import CodeExample from '../components/Dashboard/CodeExample'
 import './Dashboard.css'
 
 const Dashboard = () => {
+  const [apiKey, setApiKey] = useState(null)
+  const [selectedModel, setSelectedModel] = useState('ollama/qalb-urdu')
+  const [requestText, setRequestText] = useState('')
+  const [lastRequest, setLastRequest] = useState(null)
+
+  // Fetch API key to share with components
+  useEffect(() => {
+    fetchApiKey()
+  }, [])
+
+  const fetchApiKey = async () => {
+    try {
+      const response = await fetch('/api/v1/api-keys', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setApiKey(data.api_key || data.key || null)
+      }
+    } catch (err) {
+      console.error('Error fetching API key:', err)
+    }
+  }
+
+  const handleRequestComplete = (request) => {
+    setLastRequest(request)
+    setSelectedModel(request.model)
+    setRequestText(request.text)
+  }
+
   return (
-    <div className="dashboard">
-      <Sidebar />
-      <div className="dashboard-content">
-        <Header />
-        <main className="dashboard-main">
-          <div className="dashboard-container">
-            <WelcomeSection />
+    <DashboardLayout>
+      <ApiKeySection onApiKeyChange={setApiKey} />
 
-            <section className="dashboard-section">
-              <StatsCards />
-            </section>
+      <div className="dashboard-main-content">
+        <div className="dashboard-left">
+          <SimpleChatbot
+            apiKey={apiKey}
+            onRequestComplete={handleRequestComplete}
+            onModelChange={setSelectedModel}
+            onTextChange={setRequestText}
+          />
+        </div>
 
-            <section className="dashboard-section">
-              <h2>Quick Actions</h2>
-              <QuickActions />
-            </section>
-
-            <section className="dashboard-section">
-              <h2>Recent Activity</h2>
-              <RecentActivity />
-            </section>
-
-            <section className="dashboard-section">
-              <h2>Usage Analytics</h2>
-              <UsageAnalytics />
-            </section>
-
-            <section className="dashboard-section">
-              <h2>Make API Call</h2>
-              <ApiCallInterface />
-            </section>
-
-            <section className="dashboard-section">
-              <GettingStarted />
-            </section>
-          </div>
-        </main>
+        <div className="dashboard-right">
+          <CodeExample
+            apiKey={apiKey}
+            selectedModel={selectedModel}
+            requestText={requestText}
+            lastRequest={lastRequest}
+          />
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   )
 }
 

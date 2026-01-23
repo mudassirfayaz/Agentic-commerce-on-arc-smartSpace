@@ -1,10 +1,39 @@
+import { useLocation } from 'react-router-dom'
+import { HiOutlineBars3 } from 'react-icons/hi2'
 import './Header.css'
 
-const Header = ({ title = 'Dashboard' }) => {
+const Header = ({ isCollapsed, onToggle }) => {
+  const location = useLocation()
+
+  // Map routes to page titles
+  const getPageTitle = () => {
+    const routeMap = {
+      '/dashboard': 'Dashboard',
+      '/dashboard/projects': 'Projects',
+      '/dashboard/agents': 'Agents',
+      '/dashboard/usage': 'Usage',
+      '/dashboard/billing': 'Billing',
+      '/dashboard/api-keys': 'API Keys'
+    }
+    return routeMap[location.pathname] || 'Dashboard'
+  }
+
   return (
     <header className="dashboard-header">
       <div className="header-content">
-        <h1 className="header-title">{title}</h1>
+        <div className="header-left">
+          <button 
+            className="header-toggle"
+            onClick={onToggle}
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-expanded={!isCollapsed}
+          >
+            <HiOutlineBars3 />
+          </button>
+          <div className="header-page-title">
+            <h1>{getPageTitle()}</h1>
+          </div>
+        </div>
         <div className="header-actions">
           <div className="wallet-balance">
             <span className="balance-label">USDC Balance</span>

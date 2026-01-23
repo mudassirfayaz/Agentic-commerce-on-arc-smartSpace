@@ -1,0 +1,2 @@
+"""Budget service module."""
+

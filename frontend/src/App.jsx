@@ -7,6 +7,7 @@ import Projects from './pages/Projects'
 import Agents from './pages/Agents'
 import Usage from './pages/Usage'
 import Billing from './pages/Billing'
+import ApiKeys from './pages/ApiKeys'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/dashboard/agents" element={<Agents />} />
         <Route path="/dashboard/usage" element={<Usage />} />
         <Route path="/dashboard/billing" element={<Billing />} />
+        <Route path="/dashboard/api-keys" element={<ApiKeys />} />
       </Routes>
     </Router>
   )

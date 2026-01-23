@@ -1,0 +1,153 @@
+.model-details-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(8, 8, 8, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.model-details-modal {
+  background: #212121;
+  border-radius: 12px;
+  padding: 32px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.model-details-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: #F2F2F2;
+  font-size: 32px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.model-details-close:hover {
+  background: rgba(242, 242, 242, 0.1);
+  color: #BB4EEF;
+}
+
+.model-details-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(242, 242, 242, 0.1);
+}
+
+.details-icon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.details-title {
+  flex: 1;
+}
+
+.details-title h2 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  color: #F2F2F2;
+}
+
+.details-provider {
+  font-size: 14px;
+  color: #BB4EEF;
+  text-transform: capitalize;
+}
+
+.model-details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.details-description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #F2F2F2;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.details-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.details-section h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #F2F2F2;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.details-category {
+  font-size: 16px;
+  color: #F2F2F2;
+  text-transform: capitalize;
+}
+
+.details-pricing {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.details-capabilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.capability-badge {
+  padding: 6px 12px;
+  background: rgba(187, 78, 239, 0.1);
+  border: 1px solid rgba(187, 78, 239, 0.3);
+  border-radius: 6px;
+  font-size: 13px;
+  color: #BB4EEF;
+}
+
+@media (max-width: 768px) {
+  .model-details-modal {
+    padding: 24px;
+    max-height: 95vh;
+  }
+  
+  .details-title h2 {
+    font-size: 24px;
+  }
+  
+  .details-icon {
+    font-size: 40px;
+  }
+}
+

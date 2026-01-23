@@ -1,10 +1,9 @@
 .dashboard-header {
-  background: var(--bg-sidebar);
-  border-bottom: 1px solid var(--border-dark);
+  background: #212121;
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .header-content {
@@ -17,12 +16,50 @@
   gap: var(--spacing-lg);
 }
 
-.header-title {
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.header-toggle {
+  background: transparent;
+  border: none;
+  color: rgba(242, 242, 242, 0.7);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.header-toggle:hover {
+  color: #F2F2F2;
+  background: rgba(187, 78, 239, 0.1);
+}
+
+.header-toggle:focus {
+  outline: 2px solid #BB4EEF;
+  outline-offset: 2px;
+}
+
+.header-page-title {
+  display: flex;
+  align-items: center;
+}
+
+.header-page-title h1 {
   font-size: 20px;
   font-weight: 700;
-  color: var(--text-inverse);
   letter-spacing: -0.3px;
+  color: #F2F2F2;
   margin: 0;
+  line-height: 1.2;
 }
 
 .header-actions {
@@ -37,13 +74,12 @@
   flex-direction: column;
   align-items: flex-end;
   padding-right: var(--spacing-md);
-  border-right: 1px solid var(--border-dark);
   min-width: 100px;
 }
 
 .balance-label {
   font-size: 10px;
-  color: var(--text-muted);
+  color: rgba(242, 242, 242, 0.7);
   margin-bottom: 2px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -53,9 +89,9 @@
 .balance-amount {
   font-size: 16px;
   font-weight: 700;
-  color: var(--text-inverse);
+  color: #F2F2F2;
   letter-spacing: -0.3px;
-  background: linear-gradient(135deg, var(--success), var(--info));
+  background: linear-gradient(135deg, #BB4EEF, #A03DD9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -77,14 +113,14 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: white;
-  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.25);
+  background: linear-gradient(135deg, #BB4EEF, #A03DD9);
+  color: #F2F2F2;
+  box-shadow: 0 2px 4px rgba(187, 78, 239, 0.25);
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 4px 8px rgba(187, 78, 239, 0.35);
 }
 
 .btn-sm {
@@ -109,7 +145,6 @@
   
   .wallet-balance {
     border-right: none;
-    border-bottom: 1px solid var(--border-dark);
     padding-right: 0;
     padding-bottom: var(--spacing-sm);
     width: 100%;

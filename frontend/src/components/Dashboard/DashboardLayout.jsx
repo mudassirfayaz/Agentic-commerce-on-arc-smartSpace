@@ -1,17 +1,29 @@
-import { useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import './DashboardLayout.css'
 
-const DashboardLayout = ({ children, title }) => {
-  const location = useLocation()
-  const pageTitle = title || location.pathname.split('/').pop() || 'Dashboard'
+const DashboardLayout = ({ children }) => {
+  // Initialize collapsed state from localStorage (default: expanded)
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    const saved = localStorage.getItem('sidebarCollapsed')
+    return saved ? JSON.parse(saved) : false
+  })
+
+  // Persist state to localStorage
+  useEffect(() => {
+    localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed))
+  }, [isCollapsed])
+
+  const handleToggle = () => {
+    setIsCollapsed(!isCollapsed)
+  }
 
   return (
     <div className="dashboard">
-      <Sidebar />
-      <div className="dashboard-content">
-        <Header title={pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1)} />
+      <Sidebar isCollapsed={isCollapsed} />
+      <div className={`dashboard-content ${isCollapsed ? 'sidebar-collapsed' : ''}`}>
+        <Header isCollapsed={isCollapsed} onToggle={handleToggle} />
         <main className="dashboard-main">
           <div className="dashboard-container">
             {children}

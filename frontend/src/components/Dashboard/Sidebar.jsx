@@ -1,13 +1,24 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { 
+  HiOutlineSquares2X2, 
+  HiOutlineFolder, 
+  HiOutlineCpuChip, 
+  HiOutlineChartBar, 
+  HiOutlineCreditCard,
+  HiOutlineKey,
+  HiOutlineArrowRightOnRectangle
+} from 'react-icons/hi2'
+import SmartSpaceIcon from '../SmartSpaceIcon'
 import './Sidebar.css'
 
-const Sidebar = () => {
+const Sidebar = ({ isCollapsed }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
   const handleLogout = () => {
     navigate('/')
   }
+
 
   const isActive = (path) => {
     if (path === '/dashboard') {
@@ -16,36 +27,56 @@ const Sidebar = () => {
     return location.pathname === path
   }
 
+  const navItems = [
+    { path: '/dashboard', label: 'Dashboard', icon: HiOutlineSquares2X2 },
+    { path: '/dashboard/projects', label: 'Projects', icon: HiOutlineFolder },
+    { path: '/dashboard/agents', label: 'Agents', icon: HiOutlineCpuChip },
+    { path: '/dashboard/usage', label: 'Usage', icon: HiOutlineChartBar },
+    { path: '/dashboard/billing', label: 'Billing', icon: HiOutlineCreditCard },
+    { path: '/dashboard/api-keys', label: 'API Keys', icon: HiOutlineKey },
+  ]
+
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`} aria-expanded={!isCollapsed}>
       <div className="sidebar-header">
-        <div className="sidebar-logo">SmartSpace</div>
+        {!isCollapsed && (
+          <Link to="/dashboard" className="sidebar-logo">
+            <SmartSpaceIcon size={20} className="sidebar-logo-icon" />
+            <span>SmartSpace</span>
+          </Link>
+        )}
+        {isCollapsed && (
+          <Link to="/dashboard" className="sidebar-logo-icon-only">
+            <SmartSpaceIcon size={24} />
+          </Link>
+        )}
       </div>
       <nav className="sidebar-nav">
-        <Link to="/dashboard" className={`nav-item ${isActive('/dashboard') ? 'active' : ''}`}>
-          <span className="nav-icon">◉</span>
-          <span className="nav-text">Dashboard</span>
-        </Link>
-        <Link to="/dashboard/projects" className={`nav-item ${isActive('/dashboard/projects') ? 'active' : ''}`}>
-          <span className="nav-icon">◯</span>
-          <span className="nav-text">Projects</span>
-        </Link>
-        <Link to="/dashboard/agents" className={`nav-item ${isActive('/dashboard/agents') ? 'active' : ''}`}>
-          <span className="nav-icon">◯</span>
-          <span className="nav-text">Agents</span>
-        </Link>
-        <Link to="/dashboard/usage" className={`nav-item ${isActive('/dashboard/usage') ? 'active' : ''}`}>
-          <span className="nav-icon">◯</span>
-          <span className="nav-text">Usage</span>
-        </Link>
-        <Link to="/dashboard/billing" className={`nav-item ${isActive('/dashboard/billing') ? 'active' : ''}`}>
-          <span className="nav-icon">◯</span>
-          <span className="nav-text">Billing</span>
-        </Link>
+        {navItems.map(({ path, label, icon: Icon }) => {
+          const active = isActive(path)
+          return (
+            <Link 
+              key={path}
+              to={path} 
+              className={`nav-item ${active ? 'active' : ''}`}
+              aria-label={label}
+            >
+              <span className="nav-icon">
+                <Icon />
+              </span>
+              {!isCollapsed && <span className="nav-text">{label}</span>}
+            </Link>
+          )
+        })}
       </nav>
       <div className="sidebar-footer">
-        <button onClick={handleLogout} className="btn btn-outline btn-block">
-          Logout
+        <button 
+          onClick={handleLogout} 
+          className="btn btn-outline btn-block"
+          aria-label="Logout"
+        >
+          {!isCollapsed && <span>Logout</span>}
+          {isCollapsed && <HiOutlineArrowRightOnRectangle />}
         </button>
       </div>
     </aside>

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import SmartSpaceIcon from '../components/SmartSpaceIcon'
 import './Auth.css'
 
 const Login = () => {
@@ -17,7 +18,10 @@ const Login = () => {
   return (
     <div className="auth-page">
       <div className="auth-container">
-        <Link to="/" className="auth-logo">SmartSpace</Link>
+        <Link to="/" className="auth-logo">
+          <SmartSpaceIcon size={32} className="auth-logo-icon" />
+          <span>SmartSpace</span>
+        </Link>
         
         <div className="auth-card">
           <h1>Welcome Back</h1>

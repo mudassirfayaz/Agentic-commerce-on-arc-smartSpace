@@ -1,0 +1,1105 @@
+{
+  "models": [
+    {
+      "id": "gpt-4",
+      "name": "GPT-4",
+      "provider": "openai",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "reasoning"],
+      "pricing_tier": "high",
+      "description": "Most capable GPT-4 model, optimized for complex tasks requiring deep understanding and reasoning.",
+      "icon": "🤖"
+    },
+    {
+      "id": "gpt-4-turbo",
+      "name": "GPT-4 Turbo",
+      "provider": "openai",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "fast"],
+      "pricing_tier": "high",
+      "description": "Faster and more cost-effective version of GPT-4 with improved performance.",
+      "icon": "⚡"
+    },
+    {
+      "id": "gpt-4-vision",
+      "name": "GPT-4 Vision",
+      "provider": "openai",
+      "category": "multimodal",
+      "capabilities": ["text-generation", "vision", "image-analysis"],
+      "pricing_tier": "high",
+      "description": "GPT-4 with vision capabilities for analyzing and understanding images.",
+      "icon": "👁️"
+    },
+    {
+      "id": "gpt-3.5-turbo",
+      "name": "GPT-3.5 Turbo",
+      "provider": "openai",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "fast"],
+      "pricing_tier": "medium",
+      "description": "Fast and efficient model for most text generation tasks.",
+      "icon": "💬"
+    },
+    {
+      "id": "gpt-3.5-turbo-16k",
+      "name": "GPT-3.5 Turbo 16k",
+      "provider": "openai",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "long-context"],
+      "pricing_tier": "medium",
+      "description": "GPT-3.5 Turbo with extended 16k token context window.",
+      "icon": "📄"
+    },
+    {
+      "id": "dall-e-2",
+      "name": "DALL-E 2",
+      "provider": "openai",
+      "category": "vision",
+      "capabilities": ["image-generation", "text-to-image"],
+      "pricing_tier": "medium",
+      "description": "AI image generation model that creates images from text descriptions.",
+      "icon": "🎨"
+    },
+    {
+      "id": "dall-e-3",
+      "name": "DALL-E 3",
+      "provider": "openai",
+      "category": "vision",
+      "capabilities": ["image-generation", "text-to-image", "high-quality"],
+      "pricing_tier": "high",
+      "description": "Latest DALL-E model with improved image quality and understanding.",
+      "icon": "🖼️"
+    },
+    {
+      "id": "whisper-large",
+      "name": "Whisper Large",
+      "provider": "openai",
+      "category": "audio",
+      "capabilities": ["speech-to-text", "transcription", "multilingual"],
+      "pricing_tier": "low",
+      "description": "Large Whisper model for accurate speech-to-text transcription in multiple languages.",
+      "icon": "🎤"
+    },
+    {
+      "id": "whisper-medium",
+      "name": "Whisper Medium",
+      "provider": "openai",
+      "category": "audio",
+      "capabilities": ["speech-to-text", "transcription"],
+      "pricing_tier": "low",
+      "description": "Medium Whisper model for balanced performance and cost.",
+      "icon": "🎙️"
+    },
+    {
+      "id": "text-embedding-ada-002",
+      "name": "text-embedding-ada-002",
+      "provider": "openai",
+      "category": "embeddings",
+      "capabilities": ["embeddings", "semantic-search"],
+      "pricing_tier": "low",
+      "description": "Efficient embedding model for semantic search and similarity tasks.",
+      "icon": "🔍"
+    },
+    {
+      "id": "text-embedding-3-small",
+      "name": "text-embedding-3-small",
+      "provider": "openai",
+      "category": "embeddings",
+      "capabilities": ["embeddings", "semantic-search", "fast"],
+      "pricing_tier": "low",
+      "description": "Small, fast embedding model with good performance.",
+      "icon": "🔎"
+    },
+    {
+      "id": "text-embedding-3-large",
+      "name": "text-embedding-3-large",
+      "provider": "openai",
+      "category": "embeddings",
+      "capabilities": ["embeddings", "semantic-search", "high-quality"],
+      "pricing_tier": "medium",
+      "description": "Large embedding model with highest quality embeddings.",
+      "icon": "🔬"
+    },
+    {
+      "id": "tts-1",
+      "name": "TTS-1",
+      "provider": "openai",
+      "category": "audio",
+      "capabilities": ["text-to-speech", "voice-synthesis"],
+      "pricing_tier": "low",
+      "description": "Text-to-speech model for natural voice synthesis.",
+      "icon": "🔊"
+    },
+    {
+      "id": "tts-1-hd",
+      "name": "TTS-1 HD",
+      "provider": "openai",
+      "category": "audio",
+      "capabilities": ["text-to-speech", "voice-synthesis", "high-quality"],
+      "pricing_tier": "medium",
+      "description": "High-definition text-to-speech model with superior voice quality.",
+      "icon": "🎵"
+    },
+    {
+      "id": "claude-3-opus",
+      "name": "Claude 3 Opus",
+      "provider": "anthropic",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "reasoning", "analysis"],
+      "pricing_tier": "high",
+      "description": "Most capable Claude 3 model for complex reasoning and analysis tasks.",
+      "icon": "🧠"
+    },
+    {
+      "id": "claude-3-sonnet",
+      "name": "Claude 3 Sonnet",
+      "provider": "anthropic",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "balanced"],
+      "pricing_tier": "high",
+      "description": "Balanced Claude 3 model offering excellent performance and speed.",
+      "icon": "🎯"
+    },
+    {
+      "id": "claude-3-haiku",
+      "name": "Claude 3 Haiku",
+      "provider": "anthropic",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "fast"],
+      "pricing_tier": "medium",
+      "description": "Fastest Claude 3 model optimized for speed and efficiency.",
+      "icon": "⚡"
+    },
+    {
+      "id": "claude-3-opus-vision",
+      "name": "Claude 3 Opus Vision",
+      "provider": "anthropic",
+      "category": "multimodal",
+      "capabilities": ["text-generation", "vision", "image-analysis"],
+      "pricing_tier": "high",
+      "description": "Claude 3 Opus with vision capabilities for image understanding.",
+      "icon": "👁️"
+    },
+    {
+      "id": "claude-3-sonnet-vision",
+      "name": "Claude 3 Sonnet Vision",
+      "provider": "anthropic",
+      "category": "multimodal",
+      "capabilities": ["text-generation", "vision", "image-analysis"],
+      "pricing_tier": "high",
+      "description": "Claude 3 Sonnet with vision capabilities.",
+      "icon": "🖼️"
+    },
+    {
+      "id": "claude-2",
+      "name": "Claude 2",
+      "provider": "anthropic",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "high",
+      "description": "Previous generation Claude model with strong performance.",
+      "icon": "💭"
+    },
+    {
+      "id": "claude-2.1",
+      "name": "Claude 2.1",
+      "provider": "anthropic",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "long-context"],
+      "pricing_tier": "high",
+      "description": "Claude 2 with extended context window and improved performance.",
+      "icon": "📚"
+    },
+    {
+      "id": "claude-instant",
+      "name": "Claude Instant",
+      "provider": "anthropic",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "fast"],
+      "pricing_tier": "low",
+      "description": "Fast and cost-effective Claude model for quick responses.",
+      "icon": "🚀"
+    },
+    {
+      "id": "gemini-pro",
+      "name": "Gemini Pro",
+      "provider": "google",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "multimodal"],
+      "pricing_tier": "medium",
+      "description": "Google's advanced multimodal AI model for text and image understanding.",
+      "icon": "🔮"
+    },
+    {
+      "id": "gemini-pro-vision",
+      "name": "Gemini Pro Vision",
+      "provider": "google",
+      "category": "multimodal",
+      "capabilities": ["text-generation", "vision", "image-analysis"],
+      "pricing_tier": "medium",
+      "description": "Gemini Pro with enhanced vision capabilities.",
+      "icon": "👁️"
+    },
+    {
+      "id": "gemini-ultra",
+      "name": "Gemini Ultra",
+      "provider": "google",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "reasoning"],
+      "pricing_tier": "high",
+      "description": "Google's most capable Gemini model for complex tasks.",
+      "icon": "⭐"
+    },
+    {
+      "id": "palm-2",
+      "name": "PaLM 2",
+      "provider": "google",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "medium",
+      "description": "Google's Pathways Language Model 2 for text generation.",
+      "icon": "🌴"
+    },
+    {
+      "id": "palm-2-chat",
+      "name": "PaLM 2 for Chat",
+      "provider": "google",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "chat"],
+      "pricing_tier": "medium",
+      "description": "PaLM 2 optimized for conversational applications.",
+      "icon": "💬"
+    },
+    {
+      "id": "imagen",
+      "name": "Imagen",
+      "provider": "google",
+      "category": "vision",
+      "capabilities": ["image-generation", "text-to-image"],
+      "pricing_tier": "high",
+      "description": "Google's high-quality text-to-image generation model.",
+      "icon": "🎨"
+    },
+    {
+      "id": "imagen-2",
+      "name": "Imagen 2",
+      "provider": "google",
+      "category": "vision",
+      "capabilities": ["image-generation", "text-to-image", "high-quality"],
+      "pricing_tier": "high",
+      "description": "Latest Imagen model with improved image quality.",
+      "icon": "🖼️"
+    },
+    {
+      "id": "llama-2-70b",
+      "name": "LLaMA 2 70B",
+      "provider": "meta",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "medium",
+      "description": "Meta's large 70 billion parameter language model.",
+      "icon": "🦙"
+    },
+    {
+      "id": "llama-2-13b",
+      "name": "LLaMA 2 13B",
+      "provider": "meta",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "low",
+      "description": "Meta's 13 billion parameter language model.",
+      "icon": "🦙"
+    },
+    {
+      "id": "llama-2-7b",
+      "name": "LLaMA 2 7B",
+      "provider": "meta",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "fast"],
+      "pricing_tier": "low",
+      "description": "Meta's efficient 7 billion parameter language model.",
+      "icon": "🦙"
+    },
+    {
+      "id": "llama-3",
+      "name": "LLaMA 3",
+      "provider": "meta",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "improved"],
+      "pricing_tier": "medium",
+      "description": "Latest LLaMA model with improved performance.",
+      "icon": "🦙"
+    },
+    {
+      "id": "code-llama",
+      "name": "Code Llama",
+      "provider": "meta",
+      "category": "code",
+      "capabilities": ["code-generation", "code-completion", "programming"],
+      "pricing_tier": "medium",
+      "description": "Specialized LLaMA model for code generation and completion.",
+      "icon": "💻"
+    },
+    {
+      "id": "sam",
+      "name": "Segment Anything Model",
+      "provider": "meta",
+      "category": "vision",
+      "capabilities": ["image-segmentation", "object-detection"],
+      "pricing_tier": "medium",
+      "description": "Meta's model for image segmentation and object detection.",
+      "icon": "✂️"
+    },
+    {
+      "id": "command",
+      "name": "Command",
+      "provider": "cohere",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "medium",
+      "description": "Cohere's flagship text generation model.",
+      "icon": "🎯"
+    },
+    {
+      "id": "command-light",
+      "name": "Command Light",
+      "provider": "cohere",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "fast"],
+      "pricing_tier": "low",
+      "description": "Faster, lighter version of Command model.",
+      "icon": "⚡"
+    },
+    {
+      "id": "command-r",
+      "name": "Command R",
+      "provider": "cohere",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "retrieval"],
+      "pricing_tier": "medium",
+      "description": "Command model with retrieval-augmented generation capabilities.",
+      "icon": "🔍"
+    },
+    {
+      "id": "command-r-plus",
+      "name": "Command R+",
+      "provider": "cohere",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "retrieval", "advanced"],
+      "pricing_tier": "high",
+      "description": "Advanced Command R model with enhanced retrieval capabilities.",
+      "icon": "🔬"
+    },
+    {
+      "id": "stable-diffusion-xl",
+      "name": "Stable Diffusion XL",
+      "provider": "stability-ai",
+      "category": "vision",
+      "capabilities": ["image-generation", "text-to-image", "high-quality"],
+      "pricing_tier": "medium",
+      "description": "Latest Stable Diffusion model with XL resolution and quality.",
+      "icon": "🎨"
+    },
+    {
+      "id": "stable-diffusion-2.1",
+      "name": "Stable Diffusion 2.1",
+      "provider": "stability-ai",
+      "category": "vision",
+      "capabilities": ["image-generation", "text-to-image"],
+      "pricing_tier": "low",
+      "description": "Stable Diffusion 2.1 for high-quality image generation.",
+      "icon": "🖼️"
+    },
+    {
+      "id": "stable-diffusion-1.5",
+      "name": "Stable Diffusion 1.5",
+      "provider": "stability-ai",
+      "category": "vision",
+      "capabilities": ["image-generation", "text-to-image"],
+      "pricing_tier": "low",
+      "description": "Popular Stable Diffusion 1.5 model.",
+      "icon": "🎭"
+    },
+    {
+      "id": "stable-video-diffusion",
+      "name": "Stable Video Diffusion",
+      "provider": "stability-ai",
+      "category": "vision",
+      "capabilities": ["video-generation", "image-to-video"],
+      "pricing_tier": "high",
+      "description": "Stable Diffusion for video generation from images.",
+      "icon": "🎬"
+    },
+    {
+      "id": "stable-audio",
+      "name": "Stable Audio",
+      "provider": "stability-ai",
+      "category": "audio",
+      "capabilities": ["audio-generation", "text-to-audio"],
+      "pricing_tier": "medium",
+      "description": "Stable Diffusion for audio generation from text.",
+      "icon": "🎵"
+    },
+    {
+      "id": "mistral-7b",
+      "name": "Mistral 7B",
+      "provider": "hugging-face",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "low",
+      "description": "High-performance 7B parameter model from Mistral AI.",
+      "icon": "🌪️"
+    },
+    {
+      "id": "mixtral-8x7b",
+      "name": "Mixtral 8x7B",
+      "provider": "hugging-face",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "mixture-of-experts"],
+      "pricing_tier": "medium",
+      "description": "Mixture of experts model with 8x7B parameters.",
+      "icon": "🌀"
+    },
+    {
+      "id": "falcon-40b",
+      "name": "Falcon 40B",
+      "provider": "hugging-face",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "medium",
+      "description": "Falcon 40 billion parameter language model.",
+      "icon": "🦅"
+    },
+    {
+      "id": "falcon-7b",
+      "name": "Falcon 7B",
+      "provider": "hugging-face",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "fast"],
+      "pricing_tier": "low",
+      "description": "Efficient Falcon 7 billion parameter model.",
+      "icon": "🦅"
+    },
+    {
+      "id": "bloom",
+      "name": "BLOOM",
+      "provider": "hugging-face",
+      "category": "text",
+      "capabilities": ["text-generation", "multilingual"],
+      "pricing_tier": "low",
+      "description": "Large multilingual language model.",
+      "icon": "🌸"
+    },
+    {
+      "id": "starcoder",
+      "name": "StarCoder",
+      "provider": "hugging-face",
+      "category": "code",
+      "capabilities": ["code-generation", "code-completion"],
+      "pricing_tier": "low",
+      "description": "Code generation model trained on GitHub code.",
+      "icon": "⭐"
+    },
+    {
+      "id": "whisper-small",
+      "name": "Whisper Small",
+      "provider": "openai",
+      "category": "audio",
+      "capabilities": ["speech-to-text", "transcription", "fast"],
+      "pricing_tier": "low",
+      "description": "Small Whisper model for fast transcription.",
+      "icon": "🎙️"
+    },
+    {
+      "id": "whisper-base",
+      "name": "Whisper Base",
+      "provider": "openai",
+      "category": "audio",
+      "capabilities": ["speech-to-text", "transcription"],
+      "pricing_tier": "low",
+      "description": "Base Whisper model for standard transcription needs.",
+      "icon": "🎤"
+    },
+    {
+      "id": "codex-davinci",
+      "name": "Codex Davinci",
+      "provider": "openai",
+      "category": "code",
+      "capabilities": ["code-generation", "code-completion", "programming"],
+      "pricing_tier": "high",
+      "description": "OpenAI's most capable code generation model.",
+      "icon": "💻"
+    },
+    {
+      "id": "codex-cushman",
+      "name": "Codex Cushman",
+      "provider": "openai",
+      "category": "code",
+      "capabilities": ["code-generation", "code-completion"],
+      "pricing_tier": "medium",
+      "description": "Faster Codex model for code completion tasks.",
+      "icon": "⚡"
+    },
+    {
+      "id": "moderation",
+      "name": "Moderation",
+      "provider": "openai",
+      "category": "text",
+      "capabilities": ["content-moderation", "safety"],
+      "pricing_tier": "free",
+      "description": "Content moderation model for detecting harmful content.",
+      "icon": "🛡️"
+    },
+    {
+      "id": "gpt-4o",
+      "name": "GPT-4o",
+      "provider": "openai",
+      "category": "multimodal",
+      "capabilities": ["text-generation", "vision", "audio", "multimodal"],
+      "pricing_tier": "high",
+      "description": "GPT-4 Optimized with enhanced multimodal capabilities.",
+      "icon": "🌟"
+    },
+    {
+      "id": "gpt-4o-mini",
+      "name": "GPT-4o Mini",
+      "provider": "openai",
+      "category": "multimodal",
+      "capabilities": ["text-generation", "vision", "fast"],
+      "pricing_tier": "medium",
+      "description": "Smaller, faster GPT-4o model with multimodal support.",
+      "icon": "✨"
+    },
+    {
+      "id": "claude-3-haiku-vision",
+      "name": "Claude 3 Haiku Vision",
+      "provider": "anthropic",
+      "category": "multimodal",
+      "capabilities": ["text-generation", "vision", "image-analysis", "fast"],
+      "pricing_tier": "medium",
+      "description": "Fast Claude 3 Haiku with vision capabilities.",
+      "icon": "👁️"
+    },
+    {
+      "id": "claude-3-5-sonnet",
+      "name": "Claude 3.5 Sonnet",
+      "provider": "anthropic",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "improved"],
+      "pricing_tier": "high",
+      "description": "Enhanced Claude 3.5 Sonnet with improved performance.",
+      "icon": "🎯"
+    },
+    {
+      "id": "gemini-flash",
+      "name": "Gemini Flash",
+      "provider": "google",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "fast"],
+      "pricing_tier": "low",
+      "description": "Fast Gemini model optimized for speed.",
+      "icon": "⚡"
+    },
+    {
+      "id": "gemini-nano",
+      "name": "Gemini Nano",
+      "provider": "google",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "lightweight"],
+      "pricing_tier": "low",
+      "description": "Lightweight Gemini model for edge devices.",
+      "icon": "📱"
+    },
+    {
+      "id": "vertex-ai-text",
+      "name": "Vertex AI Text",
+      "provider": "google",
+      "category": "text",
+      "capabilities": ["text-generation", "enterprise"],
+      "pricing_tier": "high",
+      "description": "Google Cloud Vertex AI text generation model.",
+      "icon": "☁️"
+    },
+    {
+      "id": "vertex-ai-vision",
+      "name": "Vertex AI Vision",
+      "provider": "google",
+      "category": "vision",
+      "capabilities": ["image-analysis", "vision", "enterprise"],
+      "pricing_tier": "high",
+      "description": "Google Cloud Vertex AI vision model.",
+      "icon": "👁️"
+    },
+    {
+      "id": "llama-2-chat-70b",
+      "name": "LLaMA 2 Chat 70B",
+      "provider": "meta",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "chat"],
+      "pricing_tier": "medium",
+      "description": "LLaMA 2 70B optimized for chat applications.",
+      "icon": "💬"
+    },
+    {
+      "id": "llama-2-chat-13b",
+      "name": "LLaMA 2 Chat 13B",
+      "provider": "meta",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "chat"],
+      "pricing_tier": "low",
+      "description": "LLaMA 2 13B optimized for chat applications.",
+      "icon": "💬"
+    },
+    {
+      "id": "code-llama-34b",
+      "name": "Code Llama 34B",
+      "provider": "meta",
+      "category": "code",
+      "capabilities": ["code-generation", "code-completion", "large"],
+      "pricing_tier": "high",
+      "description": "Large Code Llama model with 34B parameters.",
+      "icon": "💻"
+    },
+    {
+      "id": "code-llama-13b",
+      "name": "Code Llama 13B",
+      "provider": "meta",
+      "category": "code",
+      "capabilities": ["code-generation", "code-completion"],
+      "pricing_tier": "medium",
+      "description": "Medium Code Llama model with 13B parameters.",
+      "icon": "💻"
+    },
+    {
+      "id": "code-llama-7b",
+      "name": "Code Llama 7B",
+      "provider": "meta",
+      "category": "code",
+      "capabilities": ["code-generation", "code-completion", "fast"],
+      "pricing_tier": "low",
+      "description": "Fast Code Llama model with 7B parameters.",
+      "icon": "⚡"
+    },
+    {
+      "id": "cohere-embed-english",
+      "name": "Cohere Embed English",
+      "provider": "cohere",
+      "category": "embeddings",
+      "capabilities": ["embeddings", "semantic-search"],
+      "pricing_tier": "low",
+      "description": "Cohere's English embedding model for semantic search.",
+      "icon": "🔍"
+    },
+    {
+      "id": "cohere-embed-multilingual",
+      "name": "Cohere Embed Multilingual",
+      "provider": "cohere",
+      "category": "embeddings",
+      "capabilities": ["embeddings", "semantic-search", "multilingual"],
+      "pricing_tier": "low",
+      "description": "Cohere's multilingual embedding model.",
+      "icon": "🌍"
+    },
+    {
+      "id": "cohere-rerank",
+      "name": "Cohere Rerank",
+      "provider": "cohere",
+      "category": "text",
+      "capabilities": ["reranking", "search-optimization"],
+      "pricing_tier": "low",
+      "description": "Cohere's reranking model for improving search results.",
+      "icon": "📊"
+    },
+    {
+      "id": "stable-diffusion-2-base",
+      "name": "Stable Diffusion 2 Base",
+      "provider": "stability-ai",
+      "category": "vision",
+      "capabilities": ["image-generation", "text-to-image"],
+      "pricing_tier": "low",
+      "description": "Base Stable Diffusion 2 model.",
+      "icon": "🎨"
+    },
+    {
+      "id": "stable-diffusion-inpainting",
+      "name": "Stable Diffusion Inpainting",
+      "provider": "stability-ai",
+      "category": "vision",
+      "capabilities": ["image-generation", "inpainting", "image-editing"],
+      "pricing_tier": "medium",
+      "description": "Stable Diffusion model specialized for image inpainting.",
+      "icon": "🖌️"
+    },
+    {
+      "id": "stable-diffusion-upscale",
+      "name": "Stable Diffusion Upscale",
+      "provider": "stability-ai",
+      "category": "vision",
+      "capabilities": ["image-upscaling", "image-enhancement"],
+      "pricing_tier": "medium",
+      "description": "Stable Diffusion model for upscaling images.",
+      "icon": "🔍"
+    },
+    {
+      "id": "mistral-large",
+      "name": "Mistral Large",
+      "provider": "hugging-face",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "large"],
+      "pricing_tier": "high",
+      "description": "Large Mistral model with superior performance.",
+      "icon": "🌪️"
+    },
+    {
+      "id": "mistral-medium",
+      "name": "Mistral Medium",
+      "provider": "hugging-face",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "medium",
+      "description": "Medium Mistral model with balanced performance.",
+      "icon": "🌪️"
+    },
+    {
+      "id": "mistral-small",
+      "name": "Mistral Small",
+      "provider": "hugging-face",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "fast"],
+      "pricing_tier": "low",
+      "description": "Small, fast Mistral model.",
+      "icon": "🌪️"
+    },
+    {
+      "id": "falcon-180b",
+      "name": "Falcon 180B",
+      "provider": "hugging-face",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "large"],
+      "pricing_tier": "high",
+      "description": "Massive Falcon 180 billion parameter model.",
+      "icon": "🦅"
+    },
+    {
+      "id": "bloom-176b",
+      "name": "BLOOM 176B",
+      "provider": "hugging-face",
+      "category": "text",
+      "capabilities": ["text-generation", "multilingual", "large"],
+      "pricing_tier": "high",
+      "description": "Large 176B parameter multilingual BLOOM model.",
+      "icon": "🌸"
+    },
+    {
+      "id": "starcoder-plus",
+      "name": "StarCoder Plus",
+      "provider": "hugging-face",
+      "category": "code",
+      "capabilities": ["code-generation", "code-completion", "improved"],
+      "pricing_tier": "medium",
+      "description": "Enhanced StarCoder model with improved performance.",
+      "icon": "⭐"
+    },
+    {
+      "id": "wizardcoder",
+      "name": "WizardCoder",
+      "provider": "hugging-face",
+      "category": "code",
+      "capabilities": ["code-generation", "code-completion"],
+      "pricing_tier": "low",
+      "description": "Code generation model trained with wizard-style instruction.",
+      "icon": "🧙"
+    },
+    {
+      "id": "perplexity-sonar",
+      "name": "Perplexity Sonar",
+      "provider": "perplexity",
+      "category": "text",
+      "capabilities": ["text-generation", "web-search", "research"],
+      "pricing_tier": "medium",
+      "description": "Perplexity's model with integrated web search capabilities.",
+      "icon": "🔍"
+    },
+    {
+      "id": "perplexity-sonar-large",
+      "name": "Perplexity Sonar Large",
+      "provider": "perplexity",
+      "category": "text",
+      "capabilities": ["text-generation", "web-search", "research", "large"],
+      "pricing_tier": "high",
+      "description": "Large Perplexity Sonar model for complex research tasks.",
+      "icon": "🔬"
+    },
+    {
+      "id": "together-llama-2-70b",
+      "name": "Together LLaMA 2 70B",
+      "provider": "together-ai",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "medium",
+      "description": "Together AI's hosted LLaMA 2 70B model.",
+      "icon": "🤝"
+    },
+    {
+      "id": "together-mistral-7b",
+      "name": "Together Mistral 7B",
+      "provider": "together-ai",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "low",
+      "description": "Together AI's hosted Mistral 7B model.",
+      "icon": "🤝"
+    },
+    {
+      "id": "replicate-llama-2",
+      "name": "Replicate LLaMA 2",
+      "provider": "replicate",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "low",
+      "description": "Replicate's hosted LLaMA 2 model.",
+      "icon": "🔄"
+    },
+    {
+      "id": "replicate-stable-diffusion",
+      "name": "Replicate Stable Diffusion",
+      "provider": "replicate",
+      "category": "vision",
+      "capabilities": ["image-generation", "text-to-image"],
+      "pricing_tier": "low",
+      "description": "Replicate's hosted Stable Diffusion model.",
+      "icon": "🔄"
+    },
+    {
+      "id": "anyscale-llama-2",
+      "name": "Anyscale LLaMA 2",
+      "provider": "anyscale",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "low",
+      "description": "Anyscale's hosted LLaMA 2 model.",
+      "icon": "☁️"
+    },
+    {
+      "id": "midjourney-v5",
+      "name": "Midjourney v5",
+      "provider": "midjourney",
+      "category": "vision",
+      "capabilities": ["image-generation", "text-to-image", "artistic"],
+      "pricing_tier": "high",
+      "description": "Midjourney v5 for artistic image generation.",
+      "icon": "🎨"
+    },
+    {
+      "id": "midjourney-v6",
+      "name": "Midjourney v6",
+      "provider": "midjourney",
+      "category": "vision",
+      "capabilities": ["image-generation", "text-to-image", "artistic", "improved"],
+      "pricing_tier": "high",
+      "description": "Latest Midjourney v6 with improved artistic capabilities.",
+      "icon": "🖼️"
+    },
+    {
+      "id": "runway-gen-2",
+      "name": "Runway Gen-2",
+      "provider": "runway",
+      "category": "vision",
+      "capabilities": ["video-generation", "text-to-video"],
+      "pricing_tier": "high",
+      "description": "Runway's Gen-2 model for text-to-video generation.",
+      "icon": "🎬"
+    },
+    {
+      "id": "pika-labs",
+      "name": "Pika Labs",
+      "provider": "pika",
+      "category": "vision",
+      "capabilities": ["video-generation", "image-to-video"],
+      "pricing_tier": "medium",
+      "description": "Pika Labs model for video generation.",
+      "icon": "🎥"
+    },
+    {
+      "id": "elevenlabs-tts",
+      "name": "ElevenLabs TTS",
+      "provider": "elevenlabs",
+      "category": "audio",
+      "capabilities": ["text-to-speech", "voice-cloning"],
+      "pricing_tier": "medium",
+      "description": "ElevenLabs text-to-speech with voice cloning capabilities.",
+      "icon": "🗣️"
+    },
+    {
+      "id": "suno-music",
+      "name": "Suno Music",
+      "provider": "suno",
+      "category": "audio",
+      "capabilities": ["music-generation", "text-to-music"],
+      "pricing_tier": "medium",
+      "description": "Suno's model for generating music from text.",
+      "icon": "🎵"
+    },
+    {
+      "id": "jina-embeddings",
+      "name": "Jina Embeddings",
+      "provider": "jina",
+      "category": "embeddings",
+      "capabilities": ["embeddings", "multilingual"],
+      "pricing_tier": "low",
+      "description": "Jina's multilingual embedding model.",
+      "icon": "🔍"
+    },
+    {
+      "id": "voyage-embeddings",
+      "name": "Voyage Embeddings",
+      "provider": "voyage",
+      "category": "embeddings",
+      "capabilities": ["embeddings", "semantic-search"],
+      "pricing_tier": "low",
+      "description": "Voyage AI's high-quality embedding model.",
+      "icon": "🧭"
+    },
+    {
+      "id": "qwen-72b",
+      "name": "Qwen 72B",
+      "provider": "alibaba",
+      "category": "text",
+      "capabilities": ["text-generation", "multilingual"],
+      "pricing_tier": "high",
+      "description": "Alibaba's 72B parameter multilingual model.",
+      "icon": "🌏"
+    },
+    {
+      "id": "qwen-vl",
+      "name": "Qwen-VL",
+      "provider": "alibaba",
+      "category": "multimodal",
+      "capabilities": ["text-generation", "vision", "multilingual"],
+      "pricing_tier": "high",
+      "description": "Alibaba's vision-language model.",
+      "icon": "👁️"
+    },
+    {
+      "id": "yi-34b",
+      "name": "Yi 34B",
+      "provider": "01-ai",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "medium",
+      "description": "01.AI's 34B parameter language model.",
+      "icon": "🇨🇳"
+    },
+    {
+      "id": "deepseek-coder",
+      "name": "DeepSeek Coder",
+      "provider": "deepseek",
+      "category": "code",
+      "capabilities": ["code-generation", "code-completion"],
+      "pricing_tier": "low",
+      "description": "DeepSeek's specialized code generation model.",
+      "icon": "💻"
+    },
+    {
+      "id": "deepseek-chat",
+      "name": "DeepSeek Chat",
+      "provider": "deepseek",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "low",
+      "description": "DeepSeek's conversational model.",
+      "icon": "💬"
+    },
+    {
+      "id": "phi-2",
+      "name": "Phi-2",
+      "provider": "microsoft",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "small"],
+      "pricing_tier": "low",
+      "description": "Microsoft's small but capable language model.",
+      "icon": "🔷"
+    },
+    {
+      "id": "phi-3",
+      "name": "Phi-3",
+      "provider": "microsoft",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation", "improved"],
+      "pricing_tier": "low",
+      "description": "Microsoft's improved Phi model.",
+      "icon": "🔷"
+    },
+    {
+      "id": "orion-14b",
+      "name": "Orion-14B",
+      "provider": "orion",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "medium",
+      "description": "Orion's 14B parameter language model.",
+      "icon": "🔭"
+    },
+    {
+      "id": "neural-chat",
+      "name": "Neural Chat",
+      "provider": "intel",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "low",
+      "description": "Intel's conversational AI model.",
+      "icon": "💻"
+    },
+    {
+      "id": "granite-8b",
+      "name": "Granite 8B",
+      "provider": "ibm",
+      "category": "text",
+      "capabilities": ["text-generation", "enterprise"],
+      "pricing_tier": "medium",
+      "description": "IBM's enterprise-focused language model.",
+      "icon": "💼"
+    },
+    {
+      "id": "olmo-7b",
+      "name": "OLMo 7B",
+      "provider": "allenai",
+      "category": "text",
+      "capabilities": ["text-generation", "research"],
+      "pricing_tier": "low",
+      "description": "AllenAI's open language model.",
+      "icon": "🔬"
+    },
+    {
+      "id": "qalb-urdu",
+      "name": "Qalb (Urdu LLM)",
+      "provider": "ollama",
+      "category": "text",
+      "capabilities": ["text-generation", "multilingual", "urdu"],
+      "pricing_tier": "low",
+      "description": "Specialized Urdu language model.",
+      "icon": "🌙"
+    },
+    {
+      "id": "deepseek-r1",
+      "name": "DeepSeek R1",
+      "provider": "ollama",
+      "category": "text",
+      "capabilities": ["text-generation", "reasoning"],
+      "pricing_tier": "medium",
+      "description": "DeepSeek R1 reasoning model.",
+      "icon": "🧠"
+    },
+    {
+      "id": "llama2-ollama",
+      "name": "LLaMA 2 (Ollama)",
+      "provider": "ollama",
+      "category": "text",
+      "capabilities": ["text-generation", "conversation"],
+      "pricing_tier": "low",
+      "description": "LLaMA 2 model via Ollama.",
+      "icon": "🦙"
+    }
+  ]
+}
+

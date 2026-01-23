@@ -1,12 +1,116 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import Chatbot from '../components/Chatbot/Chatbot'
+import { ModelGallery, ModelSearch, ModelDetails } from '../components/Models'
+import { getModels, getProviders, getCategories } from '../services/models'
+import modelsData from '../data/models.json' // Fallback
+import SmartSpaceIcon from '../components/SmartSpaceIcon'
 import './LandingPage.css'
 
 const LandingPage = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('python')
   const [selectedFacility, setSelectedFacility] = useState('audio')
   const [selectedPlatform, setSelectedPlatform] = useState('openai')
+  const [navScrolled, setNavScrolled] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedProvider, setSelectedProvider] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [selectedModel, setSelectedModel] = useState(null)
+  const [allModels, setAllModels] = useState([])
+  const [providers, setProviders] = useState([])
+  const [categories, setCategories] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
   const apiKey = 'smartspace234lkjpoij;lkjljasdfij234ljkls'
+  
+  const sectionRefs = useRef([])
+  const cardRefs = useRef([])
+  
+  // Load models, providers, and categories on mount
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true)
+      setError(null)
+      try {
+        const [models, providersList, categoriesList] = await Promise.all([
+          getModels(),
+          getProviders(),
+          getCategories()
+        ])
+        setAllModels(models)
+        setProviders(providersList)
+        setCategories(categoriesList)
+      } catch (err) {
+        console.error('Error loading model data:', err)
+        setError('Failed to load models. Using cached data.')
+        // Fallback to static data
+        const staticModels = modelsData.models || []
+        setAllModels(staticModels)
+        setProviders([...new Set(staticModels.map(m => m.provider))].sort())
+        setCategories([...new Set(staticModels.map(m => m.category))].sort())
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+  
+  // Check if any filters are active
+  const hasActiveFilters = searchQuery || selectedProvider || selectedCategory
+
+  // Filter models based on search and filters
+  const filteredModels = useMemo(() => {
+    // If no filters are active, return empty array
+    if (!hasActiveFilters) {
+      return []
+    }
+    
+    let filtered = allModels
+    
+    // Search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase()
+      filtered = filtered.filter(model =>
+        model.name.toLowerCase().includes(query) ||
+        model.provider.toLowerCase().includes(query) ||
+        model.description.toLowerCase().includes(query) ||
+        model.capabilities.some(cap => cap.toLowerCase().includes(query))
+      )
+    }
+    
+    // Provider filter
+    if (selectedProvider) {
+      filtered = filtered.filter(model => model.provider === selectedProvider)
+    }
+    
+    // Category filter
+    if (selectedCategory) {
+      filtered = filtered.filter(model => model.category === selectedCategory)
+    }
+    
+    return filtered
+  }, [allModels, searchQuery, selectedProvider, selectedCategory, hasActiveFilters])
+  
+  const handleSearch = (query) => {
+    setSearchQuery(query)
+  }
+  
+  const handleFilterChange = ({ provider, category }) => {
+    setSelectedProvider(provider)
+    setSelectedCategory(category)
+  }
+  
+  const handleModelClick = (model) => {
+    setSelectedModel(model)
+  }
+  
+  // Smooth scroll to models section
+  const scrollToModels = () => {
+    const modelsSection = document.getElementById('models')
+    if (modelsSection) {
+      modelsSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   const facilities = [
     { id: 'text', label: 'Text', endpoint: '/v1/text/completion' },
@@ -22,6 +126,40 @@ const LandingPage = () => {
     { id: 'google', label: 'Google', model: 'google/gemini-pro' },
     { id: 'cohere', label: 'Cohere', model: 'cohere/command' }
   ]
+
+  // Scroll-triggered animations
+  useEffect(() => {
+    const handleScroll = () => {
+      setNavScrolled(window.scrollY > 50)
+      
+      // Animate sections on scroll
+      sectionRefs.current.forEach((section) => {
+        if (section) {
+          const rect = section.getBoundingClientRect()
+          const isVisible = rect.top < window.innerHeight * 0.8 && rect.bottom > 0
+          if (isVisible) {
+            section.classList.add('visible')
+          }
+        }
+      })
+      
+      // Animate cards on scroll
+      cardRefs.current.forEach((card) => {
+        if (card) {
+          const rect = card.getBoundingClientRect()
+          const isVisible = rect.top < window.innerHeight * 0.8 && rect.bottom > 0
+          if (isVisible) {
+            card.classList.add('visible')
+          }
+        }
+      })
+    }
+    
+    window.addEventListener('scroll', handleScroll)
+    handleScroll() // Initial check
+    
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const getCodeSnippet = () => {
     const facility = facilities.find(f => f.id === selectedFacility)
@@ -104,9 +242,12 @@ fetch(url, {
   return (
     <div className="landing-page">
       {/* Navigation */}
-      <nav className="nav">
+      <nav className={`nav ${navScrolled ? 'scrolled' : ''}`}>
         <div className="nav-container">
-          <div className="nav-logo">SmartSpace</div>
+          <Link to="/" className="nav-logo">
+            <SmartSpaceIcon size={28} className="nav-logo-icon" />
+            <span>SmartSpace</span>
+          </Link>
           <div className="nav-links">
             <a href="#features">Features</a>
             <a href="#how-it-works">How It Works</a>
@@ -200,7 +341,10 @@ fetch(url, {
       </section>
 
       {/* Problem Section */}
-      <section className="section section-problem">
+      <section 
+        ref={(el) => (sectionRefs.current[0] = el)}
+        className="section section-problem"
+      >
         <div className="container">
           <h2 className="section-title">
             The Current State of AI API Access is Broken
@@ -210,15 +354,24 @@ fetch(url, {
           </p>
           
           <div className="problem-grid">
-            <div className="problem-card">
+            <div 
+              ref={(el) => (cardRefs.current[0] = el)}
+              className="problem-card"
+            >
               <h3>Shared API Keys</h3>
               <p>Sharing API keys across teams creates security risks. Revoking access means breaking production. Managing credentials becomes a nightmare.</p>
             </div>
-            <div className="problem-card">
+            <div 
+              ref={(el) => (cardRefs.current[1] = el)}
+              className="problem-card"
+            >
               <h3>Unpredictable Billing</h3>
               <p>Monthly bills surprise you. Hard to track exact usage per request. Finance teams struggle to audit costs. No per-request transparency.</p>
             </div>
-            <div className="problem-card">
+            <div 
+              ref={(el) => (cardRefs.current[2] = el)}
+              className="problem-card"
+            >
               <h3>Agent Limitations</h3>
               <p>AI agents cannot safely make paid API calls autonomously. Manual approvals break automation. No spending controls for autonomous systems.</p>
             </div>
@@ -227,7 +380,11 @@ fetch(url, {
       </section>
 
       {/* Solution Section */}
-      <section id="features" className="section section-solution">
+      <section 
+        ref={(el) => (sectionRefs.current[1] = el)}
+        id="features" 
+        className="section section-solution"
+      >
         <div className="container">
           <h2 className="section-title">One Gateway. Unlimited Possibilities.</h2>
           <p className="section-subtitle">
@@ -235,32 +392,50 @@ fetch(url, {
           </p>
           
           <div className="feature-grid">
-            <div className="feature-card">
+            <div 
+              ref={(el) => (cardRefs.current[3] = el)}
+              className="feature-card"
+            >
               <div className="feature-icon">⚡</div>
               <h3>Pay Per Request</h3>
               <p>Pay exactly what you use with instant USDC payments. No monthly commitments. Transparent pricing for every API call. Perfect for autonomous agents.</p>
             </div>
-            <div className="feature-card">
+            <div 
+              ref={(el) => (cardRefs.current[4] = el)}
+              className="feature-card"
+            >
               <div className="feature-icon">🔒</div>
               <h3>No API Keys Needed</h3>
               <p>Never expose your API keys. SmartSpace handles all authentication securely. Agents can make requests without credential management.</p>
             </div>
-            <div className="feature-card">
+            <div 
+              ref={(el) => (cardRefs.current[5] = el)}
+              className="feature-card"
+            >
               <div className="feature-icon">💰</div>
               <h3>Transparent Billing</h3>
               <p>See exactly what each request costs. Full transaction logs. Budget controls and spending policies. Enterprise-ready auditing.</p>
             </div>
-            <div className="feature-card">
+            <div 
+              ref={(el) => (cardRefs.current[6] = el)}
+              className="feature-card"
+            >
               <div className="feature-icon">🤖</div>
               <h3>Agent Ready</h3>
               <p>Autonomous agents can make API calls with built-in spending controls. SmartSpace evaluates, pays, and executes automatically.</p>
             </div>
-            <div className="feature-card">
+            <div 
+              ref={(el) => (cardRefs.current[7] = el)}
+              className="feature-card"
+            >
               <div className="feature-icon">📊</div>
               <h3>Usage Analytics</h3>
               <p>Track usage per request, per agent, per project. Real-time cost tracking. Detailed logs for every transaction.</p>
             </div>
-            <div className="feature-card">
+            <div 
+              ref={(el) => (cardRefs.current[8] = el)}
+              className="feature-card"
+            >
               <div className="feature-icon">🔄</div>
               <h3>Unified Interface</h3>
               <p>Access 100+ AI models through one consistent API. OpenAI, Anthropic, Google, and more. Switch providers instantly.</p>
@@ -274,33 +449,47 @@ fetch(url, {
         <div className="container">
           <h2 className="section-title">Supported AI Models</h2>
           <p className="section-subtitle">
-            Access 100+ AI models through one unified interface. No API keys needed.
+            Access {allModels.length > 0 ? allModels.length : '100'}+ AI models through one unified interface. No API keys needed.
           </p>
           
-          <div className="feature-grid">
-            <div className="feature-card">
-              <div className="feature-icon">🤖</div>
-              <h3>OpenAI</h3>
-              <p>GPT-4, GPT-3.5 Turbo, DALL-E, Whisper, and more. Access all OpenAI models with instant USDC payments.</p>
+          {error && (
+            <div className="model-error-message" style={{ color: '#BB4EEF', marginBottom: '20px', padding: '12px', background: 'rgba(187, 78, 239, 0.1)', borderRadius: '8px' }}>
+              {error}
             </div>
-            <div className="feature-card">
-              <div className="feature-icon">🧠</div>
-              <h3>Anthropic</h3>
-              <p>Claude 3 Opus, Sonnet, Haiku, and Claude 2. Enterprise-grade AI models with transparent per-request billing.</p>
+          )}
+          
+          <ModelSearch
+            onSearch={handleSearch}
+            onFilterChange={handleFilterChange}
+            providers={providers}
+            categories={categories}
+            disabled={isLoading}
+          />
+          
+          {isLoading ? (
+            <div className="model-loading" style={{ textAlign: 'center', padding: '60px 20px', color: '#F2F2F2' }}>
+              <p>Loading models...</p>
             </div>
-            <div className="feature-card">
-              <div className="feature-icon">🔮</div>
-              <h3>Google</h3>
-              <p>Gemini Pro, PaLM, Vertex AI, and more. Google's latest AI models available through SmartSpace.</p>
+          ) : hasActiveFilters ? (
+            <ModelGallery
+              models={filteredModels}
+              onModelClick={handleModelClick}
+            />
+          ) : (
+            <div className="model-gallery-empty" style={{ textAlign: 'center', padding: '60px 20px', color: 'rgba(242, 242, 242, 0.7)' }}>
+              <p style={{ fontSize: '16px', marginBottom: '8px' }}>Use the search bar or filters above to explore available models</p>
+              <p style={{ fontSize: '14px', color: 'rgba(242, 242, 242, 0.5)' }}>Search by name, provider, or description • Filter by provider or category</p>
             </div>
-            <div className="feature-card">
-              <div className="feature-icon">⚡</div>
-              <h3>Other Providers</h3>
-              <p>Access models from Cohere, Hugging Face, Stability AI, and more. One API for all your AI needs.</p>
-            </div>
-          </div>
+          )}
         </div>
       </section>
+      
+      {selectedModel && (
+        <ModelDetails
+          model={selectedModel}
+          onClose={() => setSelectedModel(null)}
+        />
+      )}
 
       {/* How It Works */}
       <section id="how-it-works" className="section section-how-it-works">
@@ -401,23 +590,39 @@ fetch(url, {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="section section-faq">
+      <section 
+        ref={(el) => (sectionRefs.current[2] = el)}
+        id="faq" 
+        className="section section-faq"
+      >
         <div className="container">
           <h2 className="section-title">Frequently Asked Questions</h2>
           <div className="faq-grid">
-            <div className="faq-item">
+            <div 
+              ref={(el) => (cardRefs.current[9] = el)}
+              className="faq-item"
+            >
               <h3>How does USDC payment work?</h3>
               <p>You fund your SmartSpace wallet with USDC. Each API request is paid instantly from your balance. No monthly billing, no surprises. You only pay for what you use.</p>
             </div>
-            <div className="faq-item">
+            <div 
+              ref={(el) => (cardRefs.current[10] = el)}
+              className="faq-item"
+            >
               <h3>Do I need API keys from providers?</h3>
               <p>No! SmartSpace manages all API keys securely. You never expose credentials. Agents can make requests autonomously without key management.</p>
             </div>
-            <div className="faq-item">
+            <div 
+              ref={(el) => (cardRefs.current[11] = el)}
+              className="faq-item"
+            >
               <h3>Can AI agents use this autonomously?</h3>
               <p>Yes! Set budgets and spending rules per agent or project. Agents can make API calls automatically within those constraints. SmartSpace handles payment and execution.</p>
             </div>
-            <div className="faq-item">
+            <div 
+              ref={(el) => (cardRefs.current[12] = el)}
+              className="faq-item"
+            >
               <h3>How transparent is the billing?</h3>
               <p>Every request includes a full receipt: API used, tokens consumed, cost in USDC, timestamp, and agent/project ID. Perfect for finance audits.</p>
             </div>
@@ -478,6 +683,9 @@ fetch(url, {
           </div>
         </div>
       </footer>
+
+      {/* Chatbot Component */}
+      <Chatbot />
     </div>
   )
 }

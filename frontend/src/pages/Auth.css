@@ -30,7 +30,10 @@
 }
 
 .auth-logo {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
   text-align: center;
   font-size: 32px;
   font-weight: 800;
@@ -42,6 +45,10 @@
   text-decoration: none;
   margin-bottom: var(--spacing-xl);
   transition: transform var(--transition);
+}
+
+.auth-logo-icon {
+  flex-shrink: 0;
 }
 
 .auth-logo:hover {

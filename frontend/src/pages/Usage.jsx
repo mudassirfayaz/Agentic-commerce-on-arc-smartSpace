@@ -3,15 +3,8 @@ import './Usage.css'
 
 const Usage = () => {
   return (
-    <DashboardLayout title="Usage">
+    <DashboardLayout>
       <div className="usage-page">
-        <div className="page-header">
-          <div>
-            <h1>Usage</h1>
-            <p className="page-subtitle">View your API usage, costs, and transaction logs</p>
-          </div>
-        </div>
-
         <div className="usage-stats">
           <div className="usage-stat-card">
             <div className="stat-icon">📊</div>
